@@ -463,7 +463,7 @@ setup_drive() {
         mount_root
     fi
 
-    if df -Th | grep -v tmpfs | grep -Eq "$rootDrive"; then
+    if df -Th | grep -v tmpfs | grep -q "$rootDrive"; then
         install_base
         mount_boot
         change_root
@@ -1560,60 +1560,76 @@ unmount() {
 
 set -e
 
-if [ -f $f ]; then
-    drive=$(. $f; printf '%s' $drive)
-    filesystem=$(. $f; printf '%s' $filesystem)
-    bootDrive=$(. $f; printf '%s' $bootDrive)
-    swapDrive=$(. $f; printf '%s' $swapDrive)
-    rootDrive=$(. $f; printf '%s' $rootDrive)
-    recoveryDrive=$(. $f; printf '%s' $recoveryDrive)
-    windowsDrive=$(. $f; printf '%s' $windowsDrive)
-    windowsBoot=$(. $f; printf '%s' $windowsBoot)
-    user=$(. $f; printf '%s' $user)
-    password=$(. $f; printf '%s' $password)
-    HOME="/home/$user"
-fi
 
 if [ -f /mnt/$f ]; then
+
     change_root
+
 else
-    if grep -q 'step=' $f; then
-        if [ $(. $f; printf '%s' $step) = 14 ]; then
-            reboot
-        fi
-        if [ $(. $f; printf '%s' $step) = 13 ]; then
-            unmount
-        fi
-        while true; do
-            case $(. $f; printf '%s' $step) in
-                '0') set_fstab;;
-                '1') configure_gentoo;;
-                '2') install_linux;;
-                '3') install_pkg;;
-                '4') disable_root;;
-                '5') create_user;;
-                '6') enable_services;;
-                '7') setup_desktop;;
-                '8') add_scripts;;
-                '9') make_initramfs;;
-                '10') setup_bootloader;;
-                '11') custom_commands;;
-                '12') finish;;
-                *) break;;
-            esac
-        done
-    else
-        if df -Th | grep -v tmpfs | grep -q /mnt; then
-            install_base
-            change_root
+
+    if [ -f $f ]; then
+
+        drive=$(. $f; printf '%s' $drive)
+        filesystem=$(. $f; printf '%s' $filesystem)
+        bootDrive=$(. $f; printf '%s' $bootDrive)
+        swapDrive=$(. $f; printf '%s' $swapDrive)
+        rootDrive=$(. $f; printf '%s' $rootDrive)
+        recoveryDrive=$(. $f; printf '%s' $recoveryDrive)
+        windowsDrive=$(. $f; printf '%s' $windowsDrive)
+        windowsBoot=$(. $f; printf '%s' $windowsBoot)
+        user=$(. $f; printf '%s' $user)
+        password=$(. $f; printf '%s' $password)
+        HOME="/home/$user"
+
+        if grep -q 'step=' $f; then
+
+            if [ $(. $f; printf '%s' $step) = 14 ]; then
+                reboot
+            fi
+
+            if [ $(. $f; printf '%s' $step) = 13 ]; then
+                unmount
+            fi
+
+            while true; do
+                case $(. $f; printf '%s' $step) in
+                    '0') set_fstab;;
+                    '1') configure_gentoo;;
+                    '2') install_linux;;
+                    '3') install_pkg;;
+                    '4') disable_root;;
+                    '5') create_user;;
+                    '6') enable_services;;
+                    '7') setup_desktop;;
+                    '8') add_scripts;;
+                    '9') make_initramfs;;
+                    '10') setup_bootloader;;
+                    '11') custom_commands;;
+                    '12') finish;;
+                    *) break;;
+                esac
+
+            done
+
         else
-            clear
-            init_drive
-            init_system
-            init_user
-            setup_drive
+
+            if df -Th | grep -v tmpfs | grep -q /mnt; then
+
+
+                install_base
+                change_root
+
+            fi
         fi
+
+    else
+
+        clear
+        init_drive
+        init_system
+        init_user
+        setup_drive
+
     fi
-fi
 
 #end
