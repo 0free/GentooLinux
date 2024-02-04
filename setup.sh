@@ -454,7 +454,7 @@ init_user() {
 
 setup_drive() {
 
-    if ! df -Th | grep -q '/mnt/gentoo$'; then
+    if ! df -Th | grep -q '/mnt/gentoo'; then
         format_drive
     fi
 
@@ -654,7 +654,7 @@ mount_root() {
         printf '%s\n' "❯ mounting root drive"
         mount -t ~/listilesystem $rootDrive /mnt/gentoo
     fi
-    if ! df -Th | grep -q '/mnt/gentoo$'; then
+    if ! df -Th | grep -q '/mnt/gentoo'; then
         printf '%s\n' "ERROR: root drive is not mounted"
         exit
     fi
@@ -1629,7 +1629,7 @@ else
 
         else
 
-            if df -Th | grep -q '/mnt/gentoo$'; then
+            if df -Th | grep -q '/mnt/gentoo'; then
 
                 install_base
                 change_root
