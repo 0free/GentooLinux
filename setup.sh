@@ -538,26 +538,34 @@ format_drive() {
 
     printf '%s\n' "rootDrive=$rootDrive" >> ~/list
 
-    printf '%s\n' "❯ reading partitions"
-    mdev -s && sleep 1
+    printf '%s\n' "❯ creating recovery filesystem"
+
+    if [ $recoverySize -ne "no-recovery"  ]; then
+        if [ "~/listilesystem" = 'zfs' ]; then
+            bcachefs format --compression=lz4 $recoveryDrive
+        elif [ "~/listilesystem" = 'bcachefs' ]; then
+            bcachefs format --compression=lz4 $recoveryDrive
+        elif [ "~/listilesystem" = 'btrfs' ]; then
+            printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
+        elif [ "~/listilesystem" = 'ext4' ]; then
+            printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
+        elif [ "~/listilesystem" = 'xfs' ]; then
+            printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
+        fi
+    fi
 
     printf '%s\n' "❯ creating root filesystem"
 
     if [ "~/listilesystem" = 'zfs' ]; then
-        bcachefs format --compression=lz4 $recoveryDrive
         create_zfs
     elif [ "~/listilesystem" = 'bcachefs' ]; then
         bcachefs format --compression=lz4 $rootDrive
-        bcachefs format --compression=lz4 $recoveryDrive
     elif [ "~/listilesystem" = 'btrfs' ]; then
         printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $rootDrive
-        printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
     elif [ "~/listilesystem" = 'ext4' ]; then
         printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $rootDrive
-        printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
     elif [ "~/listilesystem" = 'xfs' ]; then
         printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $rootDrive
-        printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
     fi
 
 }
