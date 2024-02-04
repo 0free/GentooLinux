@@ -573,16 +573,7 @@ create_zfs() {
         printf '%s\n' "❯ adding ZFS"
         emerge sys-fs/zfs sys-fs/zfs-kmod
     fi
-    zfs_modules='zcommon znvpair spl zavl zlua zunicode zzstd icp zfs'
-    if ! lsmod | grep -qi zfs; then
-        printf '%s\n' "❯ loading ZFS modules"
-        modprobe -a "$zfs_modules"
-        sleep 1
-    fi
-    if ! lsmod | grep -qi zfs; then
-        printf '%s\n' 'ERROR: ZFS kernel module is missing'
-        exit
-    fi
+
     printf '%s\n' "❯ creating ZFS pool"
     zpool create -f -o ashift=12 -o \
     -o autotrim=on \
@@ -594,8 +585,10 @@ create_zfs() {
     -O devices=off -O relatime=off -O atime=off -O normalization=formD \
     -O acltype=posixacl -O xattr=sa -O dedup=off \
     -O canmount=noauto -O mountpoint=/ -R /mnt/gentoo $ZFSpool $rootDrive
+
     printf '%s\n' "❯ checking ZFS pool"
     zpool status
+
     set_zfs
 
 }
@@ -640,7 +633,7 @@ mount_root() {
 
     mkdir -p /mnt/gentoo
 
-    if grep -q zfs ~/list; then
+    if grep -q 'zfs' ~/list; then
         printf '%s\n' "❯ exporting zpool"
         zpool export $ZFSpool
         printf '%s\n' "❯ importing zpool"
