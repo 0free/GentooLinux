@@ -877,8 +877,8 @@ EOF
     fi
 
     printf '%s\n' "❯ configuring pipewire"
-    mkdir -p $HOME/.config/pipewire/
-    cp /usr/share/pipewire/*.conf $HOME/.config/pipewire/
+    mkdir -p $H/.config/pipewire/
+    cp /usr/share/pipewire/*.conf $H/.config/pipewire/
 
     printf '%s\n' "❯ disabling IPv6"
     printf '%s\n' 'net.ipv6.conf.all.disable_ipv6 = 1' > /etc/sysctl.d/01-disable-ipv6.conf
@@ -887,10 +887,10 @@ EOF
     sed -i 's|^#.*||' /etc/firewalld/firewalld.conf
 
     printf '%s\n' "❯ setting ~/"
-    chown -R $user:wheel $HOME/
-    chown -R $user:wheel $HOME/.config/
-    chmod -R 700 $HOME/
-    chmod -R 700 $HOME/.config/
+    chown -R $user:wheel $H/
+    chown -R $user:wheel $H/.config/
+    chmod -R 700 $H/
+    chmod -R 700 $H/.config/
 
     printf '%s\n' "❯ configuring systemd"
 
@@ -987,9 +987,9 @@ create_user() {
     printf '%s\n%s\n' $password $password | adduser -h /home/$user -s /bin/bash -G wheel $user
     usermod -aG input,audio,video,netdev,usb,disk $user
     mkdir -p /var/mail/$user/
-    HOME="/home/$user"
-    mkdir -p $HOME/.config/autostart/
-    mkdir -p $HOME/.local/
+    H="/home/$user"
+    mkdir -p $H/.config/autostart/
+    mkdir -p $H/.local/
 
     sed -i 's|step=.*|step=6|' ~/list
 
@@ -1083,31 +1083,31 @@ setup_desktop() {
 
     if [ ! -d /usr/share/icons/windows-11-icons/ ]; then
         printf '%s\n' "❯ cloning Windows-11-icons"
-        git clone https://github.com/0free/windows-11-icons.git $HOME/windows-11-icons/
-        cp -r $HOME/windows-11-icons/* /usr/share/icons/
-        rm -r $HOME/windows-11-icons/
+        git clone https://github.com/0free/windows-11-icons.git $H/windows-11-icons/
+        cp -r $H/windows-11-icons/* /usr/share/icons/
+        rm -r $H/windows-11-icons/
     fi
 
     if grep -q gnome ~/list; then
-        if [ ! -f $HOME/dconf-settings.ini ]; then
+        if [ ! -f $H/dconf-settings.ini ]; then
             printf '%s\n' "❯ downloading dconf-settings"
-            curl -so $HOME/dconf.ini https://raw.githubusercontent.com/0free/GentooLinux/systemd/dconf-settings.ini
+            curl -so $H/dconf.ini https://raw.githubusercontent.com/0free/GentooLinux/systemd/dconf-settings.ini
             printf '%s\n' "❯ loading dconf-settings"
-            dconf load / < $HOME/dconf.ini
+            dconf load / < $H/dconf.ini
             printf '%s\n' "❯ removing dconf-settings"
-            rm $HOME/dconf.ini
+            rm $H/dconf.ini
         fi
     fi
 
     if grep -q kde ~/list; then
         mkdir -p /etc/sddm.conf.d/
-        if [ ! -d $HOME/.config/kde.org/ ]; then
+        if [ ! -d $H/.config/kde.org/ ]; then
             printf '%s\n' "❯ cloning KDE settings"
-            git clone https://github.com/0free/KDE-plasma.git $HOME/kde/
+            git clone https://github.com/0free/KDE-plasma.git $H/kde/
             printf '%s\n' "❯ configuring KDE"
-            cp -r $HOME/kde/config/* $HOME/.config/
-            cp -r $HOME/kde/local/* $HOME/.local/
-            rm -r $HOME/kde/
+            cp -r $H/kde/config/* $H/.config/
+            cp -r $H/kde/local/* $H/.local/
+            rm -r $H/kde/
         fi
     fi
 
@@ -1592,7 +1592,7 @@ else
         windowsBoot=$(. ~/list; printf '%s' $windowsBoot)
         user=$(. ~/list; printf '%s' $user)
         password=$(. ~/list; printf '%s' $password)
-        HOME="/home/$user"
+        H="/home/$user"
 
         if grep -q 'step=' ~/list; then
 
