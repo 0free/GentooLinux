@@ -511,6 +511,19 @@ format_drive() {
         recoveryDrive=$(find $drive* | grep -E "$drive[$i]|$drive[p][$i]")
         printf '%s\n' "recoveryDrive=$recoveryDrive" >> ~/list
 
+        printf '%s\n' "❯ creating recovery filesystem"
+        if [ "~/listilesystem" = 'zfs' ]; then
+            bcachefs format --compression=lz4 $recoveryDrive
+        elif [ "~/listilesystem" = 'bcachefs' ]; then
+            bcachefs format --compression=lz4 $recoveryDrive
+        elif [ "~/listilesystem" = 'btrfs' ]; then
+            printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
+        elif [ "~/listilesystem" = 'ext4' ]; then
+            printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
+        elif [ "~/listilesystem" = 'xfs' ]; then
+            printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
+        fi
+
     fi
 
     if printf '%s' $swapSize | grep -q GiB; then
@@ -537,22 +550,6 @@ format_drive() {
     rootDrive=$(find $drive* | grep -E "$drive[$i]|$drive[p][$i]")
 
     printf '%s\n' "rootDrive=$rootDrive" >> ~/list
-
-    printf '%s\n' "❯ creating recovery filesystem"
-
-    if [ $recoverySize -ne "no-recovery"  ]; then
-        if [ "~/listilesystem" = 'zfs' ]; then
-            bcachefs format --compression=lz4 $recoveryDrive
-        elif [ "~/listilesystem" = 'bcachefs' ]; then
-            bcachefs format --compression=lz4 $recoveryDrive
-        elif [ "~/listilesystem" = 'btrfs' ]; then
-            printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
-        elif [ "~/listilesystem" = 'ext4' ]; then
-            printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
-        elif [ "~/listilesystem" = 'xfs' ]; then
-            printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
-        fi
-    fi
 
     printf '%s\n' "❯ creating root filesystem"
 
