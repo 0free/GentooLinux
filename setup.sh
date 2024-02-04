@@ -1,6 +1,5 @@
 #!/bin/bash
 
-f='~/list'
 timezone='Asia/Muscat'
 ZFSpool='rpool'
 mirror='rsync://mirror.leaseweb.com/gentoo/'
@@ -74,49 +73,49 @@ pkg_list() {
     sys-fs/udisks
     "
 
-    if grep -q bcachefs $f; then
+    if grep -q bcachefs ~/list; then
         pkg="$pkg
         sys-fs/bcachefs-tools
         "
     fi
 
-    if grep -q btrfs $f; then
+    if grep -q btrfs ~/list; then
         pkg="$pkg
         sys-fs/btrfs-progs sys-fs/btrfsmaintenance
         "
     fi
 
-    if grep -q ext4 $f; then
+    if grep -q ext4 ~/list; then
         pkg="$pkg
         sys-fs/e2fsprogs
         "
     fi
 
-    if grep -q f2fs $f; then
+    if grep -q f2fs ~/list; then
         pkg="$pkg
         sys-fs/e2fsprogs
         "
     fi
 
-    if grep -q xfs $f; then
+    if grep -q xfs ~/list; then
         pkg="$pkg
         sys-fs/xfsprogs
         "
     fi
 
-    if grep -q zfs $f; then
+    if grep -q zfs ~/list; then
         pkg="$pkg
         sys-fs/zfs sys-fs/zfs-kmod
         "
     fi
 
-    if ! grep -q virtual $f; then
+    if ! grep -q virtual ~/list; then
         pkg="$pkg
 
         "
     fi
 
-    if grep -q gnome $f; then
+    if grep -q gnome ~/list; then
 
         pkg="$pkg
         gnome-base/gdm
@@ -195,7 +194,7 @@ pkg_list() {
 
     fi
 
-    if grep -q kde $f; then
+    if grep -q kde ~/list; then
 
         pkg="$pkg
         kde-frameworks/krunner
@@ -270,7 +269,7 @@ pkg_list() {
 
     fi
 
-    if grep -q hyprland $f; then
+    if grep -q hyprland ~/list; then
         pkg="$pkg
         x11-misc/lightdm x11-misc/lightdm-gtk-greeter
         gui-libs/greetd gui-apps/gtkgreet
@@ -279,21 +278,21 @@ pkg_list() {
         "
     fi
 
-    if ! grep -Eq "no-desktop|virtual|server" $f; then
+    if ! grep -Eq "no-desktop|virtual|server" ~/list; then
         pkg="$pkg
 
         "
     fi
 
-    if grep -q minimal $f; then
+    if grep -q minimal ~/list; then
 
-        if grep -q gnome $f; then
+        if grep -q gnome ~/list; then
             pkg="$pkg
 
             "
         fi
 
-        if grep -q kde $f; then
+        if grep -q kde ~/list; then
             pkg="$pkg
 
             "
@@ -305,7 +304,7 @@ pkg_list() {
 
     fi
 
-    if grep -q minimal $f; then
+    if grep -q minimal ~/list; then
         pkg="$pkg
 
         "
@@ -349,17 +348,17 @@ init_drive() {
     for i in $(seq 1 100); do printf -- '-%.0s' $i; done
     printf '\n'
 
-    if [ ! -f $f ]; then
-        printf '%s\n' "" > $f
+    if [ ! -f ~/list ]; then
+        printf '%s\n' "" > ~/list
     fi
 
-    if ! grep -q 'drive=' $f; then
+    if ! grep -q 'drive=' ~/list; then
 
         set -- $(find /dev -name 'nvme[0-9]n[1-9]' -o -name 'sd[a-z]')
 
         menu 'select a drive' drive $@
 
-        printf '%s\n' "drive=$drive" >> $f
+        printf '%s\n' "drive=$drive" >> ~/list
 
         if find /dev | grep -Eq "$drive[p][1-9]|$drive[1-9]"; then
 
@@ -395,38 +394,38 @@ init_drive() {
 
     fi
 
-    if ! grep -q 'swapSize=' $f; then
+    if ! grep -q 'swapSize=' ~/list; then
         set -- no-swap 2GiB 3GiB 4GiB 8GiB 16GiB
         menu 'select swap partition size' swapSize $@
-        printf '%s\n' "swapSize=$swapSize" >> $f
+        printf '%s\n' "swapSize=$swapSize" >> ~/list
     fi
 
-    if ! grep -q 'recoverySize=' $f; then
+    if ! grep -q 'recoverySize=' ~/list; then
         set -- 3GiB 4GiB 8GiB no-recovery
         menu 'select recovery partition size' recoverySize $@
-        printf '%s\n' "recoverySize=$recoverySize" >> $f
+        printf '%s\n' "recoverySize=$recoverySize" >> ~/list
     fi
 
-    if ! grep -q 'filesystem=' $f; then
+    if ! grep -q 'filesystem=' ~/list; then
         set -- ext4 xfs zfs bcachefs btrfs
         menu 'select a filesystem' filesystem $@
-        printf '%s\n' "filesystem=$filesystem" >> $f
+        printf '%s\n' "filesystem=~/listilesystem" >> ~/list
     fi
 
 }
 
 init_system() {
 
-    if ! grep -q 'computer=' $f; then
+    if ! grep -q 'computer=' ~/list; then
         set -- minimal virtual base
         menu 'select a computer' computer $@
-        printf '%s\n' "computer=$computer" >> $f
+        printf '%s\n' "computer=$computer" >> ~/list
     fi
 
-    if ! grep -q 'desktop=' $f; then
+    if ! grep -q 'desktop=' ~/list; then
         set -- kde gnome hyprland no-desktop
         menu 'select a desktop' desktop $@
-        printf '%s\n' "desktop=$desktop" >> $f
+        printf '%s\n' "desktop=$desktop" >> ~/list
     fi
 
     printf '\n'
@@ -435,18 +434,18 @@ init_system() {
 
 init_user() {
 
-    if ! grep -q 'user=' $f; then
+    if ! grep -q 'user=' ~/list; then
         while ! printf '%s' $user | grep -Eiq '^[a-z_][-a-z0-9._-]*$'; do
             printf '❯ username: ' && read -r user
         done
-        printf '%s\n' "user=$user" >> $f
+        printf '%s\n' "user=$user" >> ~/list
     fi
 
-    if ! grep -q 'password=' $f; then
+    if ! grep -q 'password=' ~/list; then
         while ! printf '%s' $password | grep -Eiq '^[a-z0-9._-].{1,16}$'; do
             printf '❯ password: ' && read -r password
         done
-        printf '%s\n' "password=$password" >> $f
+        printf '%s\n' "password=$password" >> ~/list
     fi
 
     printf '\n'
@@ -486,7 +485,7 @@ format_drive() {
     sgdisk -o -U $drive
 
     printf '%s\n' "❯ creating boot partition"
-    if grep -q virtual $f; then
+    if grep -q virtual ~/list; then
         bootSize='100MiB'
     else
         bootSize='300MiB'
@@ -502,7 +501,7 @@ format_drive() {
     printf '%s\n' 'Y' | mkfs.vfat -F 32 -n BOOT $bootDrive
     sleep 1
 
-    printf '%s\n' "bootDrive=$bootDrive" >> $f
+    printf '%s\n' "bootDrive=$bootDrive" >> ~/list
 
     if printf '%s' $recoverySize | grep -q GiB; then
 
@@ -510,7 +509,7 @@ format_drive() {
         sgdisk -n 0:0:+ $recoverySize -c 0:RECOVERY -t 0:8300 $drive
         i=$((i+1))
         recoveryDrive=$(find $drive* | grep -E "$drive[$i]|$drive[p][$i]")
-        printf '%s\n' "recoveryDrive=$recoveryDrive" >> $f
+        printf '%s\n' "recoveryDrive=$recoveryDrive" >> ~/list
 
     fi
 
@@ -522,12 +521,12 @@ format_drive() {
         swapDrive=$(find $drive* | grep -E "$drive[$i]|$drive[p][$i]")
         printf '%s\n' "❯ creating swap filesystem"
         mkswap $swapDrive
-        printf '%s\n' "swapDrive=$swapDrive" >> $f
+        printf '%s\n' "swapDrive=$swapDrive" >> ~/list
 
     fi
 
     printf '%s\n' "❯ creating root partition"
-    if [ "$filesystem" = zfs ]; then
+    if [ "~/listilesystem" = zfs ]; then
         sgdisk -n 0:0:0 -c 0:ZFS -t 0:BF00 $drive
     else
         sgdisk -n 0:0:0 -c 0:ROOT -t 0:8300 $drive
@@ -537,26 +536,26 @@ format_drive() {
 
     rootDrive=$(find $drive* | grep -E "$drive[$i]|$drive[p][$i]")
 
-    printf '%s\n' "rootDrive=$rootDrive" >> $f
+    printf '%s\n' "rootDrive=$rootDrive" >> ~/list
 
     printf '%s\n' "❯ reading partitions"
     mdev -s && sleep 1
 
     printf '%s\n' "❯ creating root filesystem"
 
-    if [ "$filesystem" = 'zfs' ]; then
+    if [ "~/listilesystem" = 'zfs' ]; then
         bcachefs format --compression=lz4 $recoveryDrive
         create_zfs
-    elif [ "$filesystem" = 'bcachefs' ]; then
+    elif [ "~/listilesystem" = 'bcachefs' ]; then
         bcachefs format --compression=lz4 $rootDrive
         bcachefs format --compression=lz4 $recoveryDrive
-    elif [ "$filesystem" = 'btrfs' ]; then
+    elif [ "~/listilesystem" = 'btrfs' ]; then
         printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $rootDrive
         printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
-    elif [ "$filesystem" = 'ext4' ]; then
+    elif [ "~/listilesystem" = 'ext4' ]; then
         printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $rootDrive
         printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
-    elif [ "$filesystem" = 'xfs' ]; then
+    elif [ "~/listilesystem" = 'xfs' ]; then
         printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $rootDrive
         printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
     fi
@@ -634,7 +633,7 @@ EOF
 
 mount_root() {
 
-    if grep -q zfs $f; then
+    if grep -q zfs ~/list; then
         printf '%s\n' "❯ exporting zpool"
         zpool export $ZFSpool
         printf '%s\n' "❯ importing zpool"
@@ -643,7 +642,7 @@ mount_root() {
         zfs mount -a
     else
         printf '%s\n' "❯ mounting root drive"
-        mount -t $filesystem $rootDrive /mnt/gentoo
+        mount -t ~/listilesystem $rootDrive /mnt/gentoo
     fi
     if ! df -Th | grep -q '/mnt/gentoo$'; then
         printf '%s\n' "ERROR: root drive is not mounted"
@@ -754,10 +753,10 @@ mount_boot() {
 
 change_root() {
 
-    if ! grep -q 'step=' $f; then
-        printf '%s\n' "❯ copying $f"
-        printf '\n%s' 'step=0' >> $f
-        cp $f /mnt/gentoo/root/
+    if ! grep -q 'step=' ~/list; then
+        printf '%s\n' "❯ copying ~/list"
+        printf '\n%s' 'step=0' >> ~/list
+        cp ~/list /mnt/gentoo/root/
     fi
 
     printf '%s\n' "❯ copying install script"
@@ -782,7 +781,7 @@ set_fstab() {
 
     rootUUID=$(blkid $rootDrive -o export | grep ^UUID=)
 
-    entry="$rootUUID / $filesystem x-systemd.automount,rw,ssd,noatime,autodefrag,compression=lz4 0 0"
+    entry="$rootUUID / ~/listilesystem x-systemd.automount,rw,ssd,noatime,autodefrag,compression=lz4 0 0"
 
     printf '\n%s\n' "$entry" > /etc/fstab
 
@@ -790,14 +789,14 @@ set_fstab() {
 
     printf '\n%s\n' "$bootUUID /boot vfat x-systemd.automount,rw,ssd,noatime,autodefrag 0 0" >> /etc/fstab
 
-    if grep -q swapDrive $f; then
+    if grep -q swapDrive ~/list; then
         swapUUID=$(blkid $swapDrive -o export | grep ^UUID=)
         printf '\n%s\n' "$swapUUID none swap x-systemd.automount,sw 0 0" >> /etc/fstab
     fi
 
     printf '\n%s\n' "tmpfs /var/tmp/portage tmpfs x-systemd.automount,rw,size=16GB,uid=portage,gid=portage,mode=775,ssd,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
-    sed -i 's|step=.*|step=1|' $f
+    sed -i 's|step=.*|step=1|' ~/list
 
 }
 
@@ -887,7 +886,7 @@ EOF
 
     printf '%s\n' "❯ configuring gentooLinux"
 
-    sed -i 's|step=.*|step=2|' $f
+    sed -i 's|step=.*|step=2|' ~/list
 
 }
 
@@ -897,17 +896,17 @@ install_linux() {
     emerge sys-kernel/linux-headers
     emerge sys-kernel/linux-firmware
 
-    if grep -q virtual $f; then
+    if grep -q virtual ~/list; then
 
         list="$list "
 
-        if grep -q zfs $f; then
+        if grep -q zfs ~/list; then
             list="$list "
         fi
 
     else
 
-        if grep -q zfs $f; then
+        if grep -q zfs ~/list; then
             list=''
         fi
 
@@ -927,14 +926,14 @@ install_linux() {
 
     fi
 
-    if grep -q zfs $f; then
+    if grep -q zfs ~/list; then
         list="$list zfs zfs-openrc zfs-libs zfs-udev"
     fi
 
     printf '%s\n' "❯ installing linux"
     emerge $list
 
-    sed -i 's|step=.*|step=3|' $f
+    sed -i 's|step=.*|step=3|' ~/list
 
 }
 
@@ -951,7 +950,7 @@ install_pkg() {
     printf '%s\n' "❯ installing packages"
     emerge $list
 
-    sed -i 's|step=.*|step=4|' $f
+    sed -i 's|step=.*|step=4|' ~/list
 
 }
 
@@ -961,7 +960,7 @@ disable_root() {
     passwd -l root
     sed -i 's|:/bin/bash|:/sbin/nologin|' /etc/passwd
 
-    sed -i 's|step=.*|step=5|' $f
+    sed -i 's|step=.*|step=5|' ~/list
 
 }
 
@@ -982,7 +981,7 @@ create_user() {
     mkdir -p $HOME/.config/autostart/
     mkdir -p $HOME/.local/
 
-    sed -i 's|step=.*|step=6|' $f
+    sed -i 's|step=.*|step=6|' ~/list
 
 }
 
@@ -1051,7 +1050,7 @@ enable_services() {
     #syncthing
     systemctl enable syncthing.service
 
-    sed -i 's|step=.*|step=7|' $f
+    sed -i 's|step=.*|step=7|' ~/list
 
 }
 
@@ -1079,7 +1078,7 @@ setup_desktop() {
         rm -r $HOME/windows-11-icons/
     fi
 
-    if grep -q gnome $f; then
+    if grep -q gnome ~/list; then
         if [ ! -f $HOME/dconf-settings.ini ]; then
             printf '%s\n' "❯ downloading dconf-settings"
             curl -so $HOME/dconf.ini https://raw.githubusercontent.com/0free/GentooLinux/systemd/dconf-settings.ini
@@ -1090,7 +1089,7 @@ setup_desktop() {
         fi
     fi
 
-    if grep -q kde $f; then
+    if grep -q kde ~/list; then
         mkdir -p /etc/sddm.conf.d/
         if [ ! -d $HOME/.config/kde.org/ ]; then
             printf '%s\n' "❯ cloning KDE settings"
@@ -1119,7 +1118,7 @@ EOF
         configure_greetd
     fi
 
-    sed -i 's|step=.*|step=8|' $f
+    sed -i 's|step=.*|step=8|' ~/list
 
 }
 
@@ -1127,7 +1126,7 @@ configure_lightdm() {
 
     printf '%s\n' "❯ configuring lightdm"
 
-    if grep -q hyprland $f; then
+    if grep -q hyprland ~/list; then
         sed -i 's|#autologin-session=.*|autologin-session=/usr/share/wayland-sessions/hyprland.desktop|' /etc/lightdm/lightdm.conf
     fi
 
@@ -1145,7 +1144,7 @@ configure_greetd() {
 
     printf '%s\n' "❯ configuring greetd"
 
-    if grep -q hyprland $f; then
+    if grep -q hyprland ~/list; then
         sed -i 's|# exec-once = .*|exec-once = regreet|' /usr/share/hyprland/hyprland.conf
         command='/usr/bin/Hyprland  --config /usr/share/hyprland/hyprland.conf'
     fi
@@ -1196,7 +1195,7 @@ add_scripts() {
     install_office
     openwrt
 
-    sed -i 's|step=.*|step=9|' $f
+    sed -i 's|step=.*|step=9|' ~/list
 
 }
 
@@ -1257,7 +1256,7 @@ make_initramfs() {
     printf '%s\n' "❯ installing mkinitfs"
     modules='ata base btrfs cdrom dhcp ext4 f2fs keymap kms lvm mmc network nvme scsi usb virtio wireguard xfs zfs'
 
-    if grep -q virtual $f; then
+    if grep -q virtual ~/list; then
         modules="$modules vboxvideo virtio-gpu vmvga vmwgfx"
     else
         modules="$modules intel_agp i915"
@@ -1272,7 +1271,7 @@ make_initramfs() {
         mkinitfs -b / -c /etc/mkinitfs/mkinitfs.conf -f /etc/fstab -o /boot/initramfs-$(printf '%s' $k | sed 's|.*-||') $k
     done
 
-    sed -i 's|step=.*|step=10|' $f
+    sed -i 's|step=.*|step=10|' ~/list
 
 }
 
@@ -1280,13 +1279,13 @@ setup_bootloader() {
 
     find_windows
 
-    if grep -q zfs $f; then
+    if grep -q zfs ~/list; then
         param="root=$ZFSpool"
     else
         param="root=$(blkid $rootDrive -o export | grep ^UUID=)"
     fi
 
-    param="$param rootfstype=$filesystem rw quiet loglevel=3 mitigations=off apparmor=1 security=apparmor"
+    param="$param rootfstype=~/listilesystem rw quiet loglevel=3 mitigations=off apparmor=1 security=apparmor"
 
     if [ -f /usr/libexec/fwupd/efi/fwupdx64.efi ]; then
         firmware_update
@@ -1294,7 +1293,7 @@ setup_bootloader() {
 
     systemd_boot
 
-    sed -i 's|step=.*|step=11|' $f
+    sed -i 's|step=.*|step=11|' ~/list
 
 }
 
@@ -1313,8 +1312,8 @@ find_windows() {
                         cp -rlf /windows/* /boot/
                         windowsDrive=$d
                         windowsBoot=$p
-                        printf '%s\n' "windowsDrive=$d" >> $f
-                        printf '%s\n' "windowsBoot=$p" >> $f
+                        printf '%s\n' "windowsDrive=$d" >> ~/list
+                        printf '%s\n' "windowsBoot=$p" >> ~/list
                     fi
                     umount /windows/
                     if [ -d /windows/ ]; then
@@ -1511,7 +1510,7 @@ EOF
 }
 EOF
 
-    sed -i 's|step=.*|step=12|' $f
+    sed -i 's|step=.*|step=12|' ~/list
 
 }
 
@@ -1526,7 +1525,7 @@ finish() {
 
     printf '%s\n' "❯ installation is completed"
 
-    sed -i 's|step=.*|step=13|' $f
+    sed -i 's|step=.*|step=13|' ~/list
 
 }
 
@@ -1556,7 +1555,7 @@ unmount() {
         zpool export -a
     fi
 
-    sed -i 's|step=.*|step=14|' $f
+    sed -i 's|step=.*|step=14|' ~/list
 
     exit
 
@@ -1565,39 +1564,39 @@ unmount() {
 set -e
 
 
-if [ -f /mnt/gentoo/$f ]; then
+if [ -f /mnt/gentoo/~/list ]; then
 
     change_root
 
 else
 
-    if [ -f $f ]; then
+    if [ -f ~/list ]; then
 
-        drive=$(. $f; printf '%s' $drive)
-        filesystem=$(. $f; printf '%s' $filesystem)
-        bootDrive=$(. $f; printf '%s' $bootDrive)
-        swapDrive=$(. $f; printf '%s' $swapDrive)
-        rootDrive=$(. $f; printf '%s' $rootDrive)
-        recoveryDrive=$(. $f; printf '%s' $recoveryDrive)
-        windowsDrive=$(. $f; printf '%s' $windowsDrive)
-        windowsBoot=$(. $f; printf '%s' $windowsBoot)
-        user=$(. $f; printf '%s' $user)
-        password=$(. $f; printf '%s' $password)
+        drive=$(. ~/list; printf '%s' $drive)
+        filesystem=$(. ~/list; printf '%s' ~/listilesystem)
+        bootDrive=$(. ~/list; printf '%s' $bootDrive)
+        swapDrive=$(. ~/list; printf '%s' $swapDrive)
+        rootDrive=$(. ~/list; printf '%s' $rootDrive)
+        recoveryDrive=$(. ~/list; printf '%s' $recoveryDrive)
+        windowsDrive=$(. ~/list; printf '%s' $windowsDrive)
+        windowsBoot=$(. ~/list; printf '%s' $windowsBoot)
+        user=$(. ~/list; printf '%s' $user)
+        password=$(. ~/list; printf '%s' $password)
         HOME="/home/$user"
 
-        if grep -q 'step=' $f; then
+        if grep -q 'step=' ~/list; then
 
-            if [ $(. $f; printf '%s' $step) = 14 ]; then
+            if [ $(. ~/list; printf '%s' $step) = 14 ]; then
                 reboot
             fi
 
-            if [ $(. $f; printf '%s' $step) = 13 ]; then
+            if [ $(. ~/list; printf '%s' $step) = 13 ]; then
                 unmount
             fi
 
             while true; do
 
-                case $(. $f; printf '%s' $step) in
+                case $(. ~/list; printf '%s' $step) in
 
                     '0') set_fstab;;
                     '1') configure_gentoo;;
