@@ -409,7 +409,7 @@ init_drive() {
     if ! grep -q 'filesystem=' ~/list; then
         set -- ext4 xfs zfs bcachefs btrfs
         menu 'select a filesystem' filesystem $@
-        printf '%s\n' "filesystem=~/listilesystem" >> ~/list
+        printf '%s\n' "filesystem=$filesystem" >> ~/list
     fi
 
 }
@@ -512,15 +512,15 @@ format_drive() {
         printf '%s\n' "recoveryDrive=$recoveryDrive" >> ~/list
 
         printf '%s\n' "❯ creating recovery filesystem"
-        if [ "~/listilesystem" = 'zfs' ]; then
+        if [ "$filesystem" = 'zfs' ]; then
             bcachefs format --compression=lz4 $recoveryDrive
-        elif [ "~/listilesystem" = 'bcachefs' ]; then
+        elif [ "$filesystem" = 'bcachefs' ]; then
             bcachefs format --compression=lz4 $recoveryDrive
-        elif [ "~/listilesystem" = 'btrfs' ]; then
+        elif [ "$filesystem" = 'btrfs' ]; then
             printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
-        elif [ "~/listilesystem" = 'ext4' ]; then
+        elif [ "$filesystem" = 'ext4' ]; then
             printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
-        elif [ "~/listilesystem" = 'xfs' ]; then
+        elif [ "$filesystem" = 'xfs' ]; then
             printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
         fi
 
@@ -539,7 +539,7 @@ format_drive() {
     fi
 
     printf '%s\n' "❯ creating root partition"
-    if [ "~/listilesystem" = zfs ]; then
+    if [ "$filesystem" = zfs ]; then
         sgdisk -n 0:0:0 -c 0:ZFS -t 0:BF00 $drive
     else
         sgdisk -n 0:0:0 -c 0:ROOT -t 0:8300 $drive
@@ -553,15 +553,15 @@ format_drive() {
 
     printf '%s\n' "❯ creating root filesystem"
 
-    if [ "~/listilesystem" = 'zfs' ]; then
+    if [ "$filesystem" = 'zfs' ]; then
         create_zfs
-    elif [ "~/listilesystem" = 'bcachefs' ]; then
+    elif [ "$filesystem" = 'bcachefs' ]; then
         bcachefs format --compression=lz4 $rootDrive
-    elif [ "~/listilesystem" = 'btrfs' ]; then
+    elif [ "$filesystem" = 'btrfs' ]; then
         printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $rootDrive
-    elif [ "~/listilesystem" = 'ext4' ]; then
+    elif [ "$filesystem" = 'ext4' ]; then
         printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $rootDrive
-    elif [ "~/listilesystem" = 'xfs' ]; then
+    elif [ "$filesystem" = 'xfs' ]; then
         printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $rootDrive
     fi
 
@@ -649,7 +649,7 @@ mount_root() {
         zfs mount -a
     else
         printf '%s\n' "❯ mounting root drive"
-        mount -t ~/listilesystem $rootDrive /mnt/gentoo
+        mount -t $filesystem $rootDrive /mnt/gentoo
     fi
     if ! df -Th | grep -q '/mnt/gentoo'; then
         printf '%s\n' "ERROR: root drive is not mounted"
@@ -788,7 +788,7 @@ set_fstab() {
 
     rootUUID=$(blkid $rootDrive -o export | grep ^UUID=)
 
-    entry="$rootUUID / ~/listilesystem x-systemd.automount,rw,ssd,noatime,autodefrag,compression=lz4 0 0"
+    entry="$rootUUID / $filesystem x-systemd.automount,rw,ssd,noatime,autodefrag,compression=lz4 0 0"
 
     printf '\n%s\n' "$entry" > /etc/fstab
 
@@ -1292,7 +1292,7 @@ setup_bootloader() {
         param="root=$(blkid $rootDrive -o export | grep ^UUID=)"
     fi
 
-    param="$param rootfstype=~/listilesystem rw quiet loglevel=3 mitigations=off apparmor=1 security=apparmor"
+    param="$param rootfstype=$filesystem rw quiet loglevel=3 mitigations=off apparmor=1 security=apparmor"
 
     if [ -f /usr/libexec/fwupd/efi/fwupdx64.efi ]; then
         firmware_update
@@ -1580,7 +1580,7 @@ else
     if [ -f ~/list ]; then
 
         drive=$(. ~/list; printf '%s' $drive)
-        filesystem=$(. ~/list; printf '%s' ~/listilesystem)
+        filesystem=$(. ~/list; printf '%s' $filesystem)
         bootDrive=$(. ~/list; printf '%s' $bootDrive)
         swapDrive=$(. ~/list; printf '%s' $swapDrive)
         rootDrive=$(. ~/list; printf '%s' $rootDrive)
