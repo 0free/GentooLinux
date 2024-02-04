@@ -1,6 +1,6 @@
 #!/bin/bash
 
-f='/root/list'
+f='~/list'
 timezone='Asia/Muscat'
 ZFSpool='rpool'
 mirror='rsync://mirror.leaseweb.com/gentoo/'
@@ -1145,7 +1145,7 @@ configure_greetd() {
 
     printf '%s\n' "❯ configuring greetd"
 
-    if grep -q hyprland /root/list; then
+    if grep -q hyprland $f; then
         sed -i 's|# exec-once = .*|exec-once = regreet|' /usr/share/hyprland/hyprland.conf
         command='/usr/bin/Hyprland  --config /usr/share/hyprland/hyprland.conf'
     fi
