@@ -1592,7 +1592,9 @@ else
             fi
 
             while true; do
+
                 case $(. $f; printf '%s' $step) in
+
                     '0') set_fstab;;
                     '1') configure_gentoo;;
                     '2') install_linux;;
@@ -1607,6 +1609,7 @@ else
                     '11') custom_commands;;
                     '12') finish;;
                     *) break;;
+
                 esac
 
             done
@@ -1631,5 +1634,7 @@ else
         setup_drive
 
     fi
+
+fi
 
 #end
