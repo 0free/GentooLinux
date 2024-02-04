@@ -1,6 +1,6 @@
 #!/bin/bash
 
-f=/root/list
+f='/root/list'
 timezone='Asia/Muscat'
 ZFSpool='rpool'
 mirror='rsync://mirror.leaseweb.com/gentoo/'
@@ -132,16 +132,7 @@ pkg_list() {
         gnome-base/gnome-shell
         gnome-base/gsettings-desktop-schemas
         gnome-base/gvfs
-        gnome-base/
-        gnome-base/
-        gnome-base/
-        gnome-base/
-        gnome-base/
-        gnome-base/
         gnome-base/nautilus
-        gnome-base/
-        gnome-base/
-        gnome-base/
         "
 
         pkg="$pkg
@@ -158,6 +149,9 @@ pkg_list() {
         pkg="$pkg
         x11-themes/adwaita-icon-theme
         x11-themes/sound-theme-freedesktop
+        "
+
+        pkg="$pkg
         x11-terms/gnome-terminal
         "
 
