@@ -473,7 +473,7 @@ setup_drive() {
 
 format_drive() {
 
-    if [ ! -f /usr/bin/sgdisk ]; then
+    if [ ! -f /usr/sbin/sgdisk ]; then
         printf '%s\n' "❯ installing sgdisk"
         emerge sys-apps/gptfdisk
     fi
