@@ -350,7 +350,7 @@ init_drive() {
     printf '\n'
 
     if [ ! -f $f ]; then
-        printf "" > $f
+        printf '%s' "\n" > $f
     fi
 
     if ! grep -q 'drive=' $f; then
