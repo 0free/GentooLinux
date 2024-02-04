@@ -455,11 +455,11 @@ init_user() {
 
 setup_drive() {
 
-    if ! df -Th | grep -v tmpfs | grep -q '/mnt'; then
+    if ! df -Th | grep -v tmpfs | grep -q '/mnt/gentoo'; then
         format_drive
     fi
 
-    if ! df -Th | grep -v tmpfs | grep -q $rootDrive; then
+    if ! df -Th | grep -v tmpfs | grep -q "$rootDrive"; then
         mount_root
     fi
 
@@ -589,7 +589,7 @@ create_zfs() {
     -O recordsize=16k -O dnodesize=16k \
     -O devices=off -O relatime=off -O atime=off -O normalization=formD \
     -O acltype=posixacl -O xattr=sa -O dedup=off \
-    -O canmount=noauto -O mountpoint=/ -R /mnt $ZFSpool $rootDrive
+    -O canmount=noauto -O mountpoint=/ -R /mnt/gentoo $ZFSpool $rootDrive
     printf '%s\n' "❯ checking ZFS pool"
     zpool status
     set_zfs
@@ -601,13 +601,13 @@ set_zfs() {
     printf '%s\n' "❯ setting ZFS pool as rootfs"
     zpool set bootfs=$ZFSpool $ZFSpool
     printf '%s\n' "❯ setting ZFS cache"
-    mkdir -p /mnt/etc/zfs/
-    cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
-    chmod a-w /mnt/etc/zfs/zpool.cache
-    chattr +i /mnt/etc/zfs/zpool.cache
+    mkdir -p /mnt/gentoo/etc/zfs/
+    cp /etc/zfs/zpool.cache /mnt/gentoo/etc/zfs/zpool.cache
+    chmod a-w /mnt/gentoo/etc/zfs/zpool.cache
+    chattr +i /mnt/gentoo/etc/zfs/zpool.cache
     printf '%s\n' "❯ adding ZFS options"
-    mkdir -p /mnt/etc/modprobe.d/
-    cat > /mnt/etc/modprobe.d/zfs.conf <<EOF
+    mkdir -p /mnt/gentoo/etc/modprobe.d/
+    cat > /mnt/gentoo/etc/modprobe.d/zfs.conf <<EOF
 options zfs l2arc_noprefetch=0
 options zfs l2arc_write_max=536870912
 options zfs l2arc_write_boost=1073741824
@@ -636,18 +636,18 @@ mount_root() {
         printf '%s\n' "❯ exporting zpool"
         zpool export $ZFSpool
         printf '%s\n' "❯ importing zpool"
-        zpool import $ZFSpool -d $rootDrive -R /mnt
+        zpool import $ZFSpool -d $rootDrive -R /mnt/gentoo
         printf '%s\n' "❯ mounting zfs dataset"
         zfs mount -a
     else
         printf '%s\n' "❯ mounting root drive"
-        mount -t $filesystem $rootDrive /mnt
+        mount -t $filesystem $rootDrive /mnt/gentoo
     fi
-    if ! df -Th | grep -v tmpfs | grep -q '/mnt$'; then
+    if ! df -Th | grep -v tmpfs | grep -q '/mnt/gentoo$'; then
         printf '%s\n' "ERROR: root drive is not mounted"
         exit
     fi
-    mkdir -p /mnt/boot/
+    mkdir -p /mnt/gentoo/boot/
 
 }
 
@@ -721,20 +721,20 @@ EOF
 
     tar xpf /root/stage3.tar.xz --xattrs-include='*.*' --numeric-owner
 
-    if [ -d /mnt/boot/ ]; then
+    if [ -d /mnt/gentoo/boot/ ]; then
         rm /root/stage3.tar.xz
     fi
 
     printf '%s\n' "❯ Configuring Portage"
-    mkdir -p /mnt/etc/portage/repos.conf/
-    cp /etc/portage/*.conf /mnt/etc/portage/
-    cp /etc/portage/repos.conf/*.conf /mnt/etc/portage/repos.conf/
-    cp /etc/portage/binrepos.conf/*.conf /mnt/etc/portage/binrepos.conf/
+    mkdir -p /mnt/gentoo/etc/portage/repos.conf/
+    cp /etc/portage/*.conf /mnt/gentoo/etc/portage/
+    cp /etc/portage/repos.conf/*.conf /mnt/gentoo/etc/portage/repos.conf/
+    cp /etc/portage/binrepos.conf/*.conf /mnt/gentoo/etc/portage/binrepos.conf/
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
     echo "sys-apps/systemd boot" >> /etc/portage/package.use/systemd
-    emerge --root=/mnt --config-root=/mnt sys-apps/systemd
+    emerge --root=/mnt/gentoo --config-root=/mnt/gentoo sys-apps/systemd
 
     printf '%s\n' "❯ adding CloudFlare DNS"
     ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
@@ -746,8 +746,8 @@ EOF
 mount_boot() {
 
     printf '%s\n' "❯ mounting boot drive"
-    mount -t vfat $bootDrive /mnt/boot
-    mkdir -p /mnt/boot/efi/boot/
+    mount -t vfat $bootDrive /mnt/gentoo/boot
+    mkdir -p /mnt/gentoo/boot/efi/boot/
 
 }
 
@@ -756,23 +756,23 @@ change_root() {
     if ! grep -q 'step=' $f; then
         printf '%s\n' "❯ copying $f"
         printf '\n%s' 'step=0' >> $f
-        cp $f /mnt/root/
+        cp $f /mnt/gentoo/root/
     fi
 
     printf '%s\n' "❯ copying install script"
-    cp /root/setup.sh /mnt/root/
+    cp /root/setup.sh /mnt/gentoo/root/
 
     printf '%s\n' "❯ changing root"
 
-    mount --types proc /proc /mnt/proc
-    mount --rbind /sys /mnt/sys
-    mount --make-rslave /mnt/sys
-    mount --rbind /dev /mnt/dev
-    mount --make-rslave /mnt/dev
-    mount --bind /run /mnt/run
-    mount --make-slave /mnt/run
+    mount --types proc /proc /mnt/gentoo/proc
+    mount --rbind /sys /mnt/gentoo/sys
+    mount --make-rslave /mnt/gentoo/sys
+    mount --rbind /dev /mnt/gentoo/dev
+    mount --make-rslave /mnt/gentoo/dev
+    mount --bind /run /mnt/gentoo/run
+    mount --make-slave /mnt/gentoo/run
 
-    chroot /mnt /bin/bash /root/setup.sh
+    chroot /mnt/gentoo /bin/bash /root/setup.sh
 
 }
 
@@ -1532,19 +1532,19 @@ finish() {
 
 unmount() {
 
-    printf '%s\n' "❯ un-mounting /mnt/*"
-    for d in /mnt/run /mnt/sys /mnt/dev /mnt/proc /mnt/boot; do
+    printf '%s\n' "❯ un-mounting /mnt/gentoo/*"
+    for d in /mnt/gentoo/run /mnt/gentoo/sys /mnt/gentoo/dev /mnt/gentoo/proc /mnt/gentoo/boot; do
         if df -Th | grep -q $d; then
             umount $d
         fi
     done
 
     printf '%s\n' "❯ cleaning /root/"
-    rm -rf /mnt/root/*
+    rm -rf /mnt/gentoo/root/*
 
-    if df -Th | grep -q '/mnt'; then
-        printf '%s\n' "❯ un-mounting /mnt"
-        umount -R /mnt
+    if df -Th | grep -q '/mnt/gentoo'; then
+        printf '%s\n' "❯ un-mounting /mnt/gentoo"
+        umount -R /mnt/gentoo
     fi
 
     if df -Th | grep -q zfs; then
@@ -1561,7 +1561,7 @@ unmount() {
 set -e
 
 
-if [ -f /mnt/$f ]; then
+if [ -f /mnt/gentoo/$f ]; then
 
     change_root
 
@@ -1616,7 +1616,7 @@ else
 
         else
 
-            if df -Th | grep -v tmpfs | grep -q /mnt; then
+            if df -Th | grep -v tmpfs | grep -q /mnt/gentoo; then
 
 
                 install_base
