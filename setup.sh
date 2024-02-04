@@ -455,15 +455,15 @@ init_user() {
 
 setup_drive() {
 
-    if ! df -Th | grep -v tmpfs | grep -q '/mnt/gentoo'; then
+    if ! df -Th | grep -q '/mnt/gentoo$'; then
         format_drive
     fi
 
-    if ! df -Th | grep -v tmpfs | grep -q "$rootDrive"; then
+    if ! df -Th | grep -q "$rootDrive$"; then
         mount_root
     fi
 
-    if df -Th | grep -v tmpfs | grep -q "$rootDrive"; then
+    if df -Th | grep -q "$rootDrive$"; then
         install_base
         mount_boot
         change_root
@@ -600,11 +600,13 @@ set_zfs() {
 
     printf '%s\n' "❯ setting ZFS pool as rootfs"
     zpool set bootfs=$ZFSpool $ZFSpool
+
     printf '%s\n' "❯ setting ZFS cache"
     mkdir -p /mnt/gentoo/etc/zfs/
     cp /etc/zfs/zpool.cache /mnt/gentoo/etc/zfs/zpool.cache
     chmod a-w /mnt/gentoo/etc/zfs/zpool.cache
     chattr +i /mnt/gentoo/etc/zfs/zpool.cache
+
     printf '%s\n' "❯ adding ZFS options"
     mkdir -p /mnt/gentoo/etc/modprobe.d/
     cat > /mnt/gentoo/etc/modprobe.d/zfs.conf <<EOF
@@ -643,11 +645,10 @@ mount_root() {
         printf '%s\n' "❯ mounting root drive"
         mount -t $filesystem $rootDrive /mnt/gentoo
     fi
-    if ! df -Th | grep -v tmpfs | grep -q '/mnt/gentoo$'; then
+    if ! df -Th | grep -q '/mnt/gentoo$'; then
         printf '%s\n' "ERROR: root drive is not mounted"
         exit
     fi
-    mkdir -p /mnt/gentoo/boot/
 
 }
 
@@ -746,7 +747,7 @@ EOF
 mount_boot() {
 
     printf '%s\n' "❯ mounting boot drive"
-    mount -t vfat $bootDrive /mnt/gentoo/boot
+    mount -t vfat $bootDrive /mnt/gentoo/boot/
     mkdir -p /mnt/gentoo/boot/efi/boot/
 
 }
@@ -763,7 +764,6 @@ change_root() {
     cp /root/setup.sh /mnt/gentoo/root/
 
     printf '%s\n' "❯ changing root"
-
     mount --types proc /proc /mnt/gentoo/proc
     mount --rbind /sys /mnt/gentoo/sys
     mount --make-rslave /mnt/gentoo/sys
@@ -772,7 +772,7 @@ change_root() {
     mount --bind /run /mnt/gentoo/run
     mount --make-slave /mnt/gentoo/run
 
-    chroot /mnt/gentoo /bin/bash /root/setup.sh
+    chroot /mnt/gentoo/ bash /root/setup.sh
 
 }
 
@@ -1533,7 +1533,11 @@ finish() {
 unmount() {
 
     printf '%s\n' "❯ un-mounting /mnt/gentoo/*"
-    for d in /mnt/gentoo/run /mnt/gentoo/sys /mnt/gentoo/dev /mnt/gentoo/proc /mnt/gentoo/boot; do
+    for d in '/mnt/gentoo/run' \
+             '/mnt/gentoo/sys' \
+             '/mnt/gentoo/dev' \
+             '/mnt/gentoo/proc' \
+             '/mnt/gentoo/boot'; do
         if df -Th | grep -q $d; then
             umount $d
         fi
@@ -1543,7 +1547,7 @@ unmount() {
     rm -rf /mnt/gentoo/root/*
 
     if df -Th | grep -q '/mnt/gentoo'; then
-        printf '%s\n' "❯ un-mounting /mnt/gentoo"
+        printf '%s\n' "❯ un-mounting /mnt/gentoo/"
         umount -R /mnt/gentoo
     fi
 
@@ -1616,8 +1620,7 @@ else
 
         else
 
-            if df -Th | grep -v tmpfs | grep -q /mnt/gentoo; then
-
+            if df -Th | grep -q '/mnt/gentoo$'; then
 
                 install_base
                 change_root
