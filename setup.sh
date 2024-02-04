@@ -641,6 +641,8 @@ EOF
 
 mount_root() {
 
+    mkdir -p /mnt/gentoo
+
     if grep -q zfs ~/list; then
         printf '%s\n' "❯ exporting zpool"
         zpool export $ZFSpool
