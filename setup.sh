@@ -702,7 +702,7 @@ priority = 99
 sync-uri = 
 EOF
 
-    mkdir --parents /etc/portage/repos.conf
+    mkdir -p /etc/portage/repos.conf
     cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 
     emerge-webrsync
@@ -1578,6 +1578,12 @@ if [ -f /mnt/$f ]; then
     change_root
 else
     if grep -q 'step=' $f; then
+        if [ $(. $f; printf '%s' $step) = 14 ]; then
+            reboot
+        fi
+        if [ $(. $f; printf '%s' $step) = 13 ]; then
+            unmount
+        fi
         while true; do
             case $(. $f; printf '%s' $step) in
                 '0') set_fstab;;
@@ -1596,12 +1602,6 @@ else
                 *) break;;
             esac
         done
-        if [ $(. $f; printf '%s' $step) = 13 ]; then
-            unmount
-        fi
-        if [ $(. $f; printf '%s' $step) = 14 ]; then
-            reboot
-        fi
     else
         if df -Th | grep -v tmpfs | grep -q /mnt; then
             install_base
