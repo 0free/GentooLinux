@@ -663,16 +663,16 @@ EOF
 
     url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd/latest-stage3-amd64-llvm-systemd.txt"
 
-    curl -o ~/stage3.txt $url
+    curl -o stage3.txt $url
 
-    url=$(grep -o "^stage3.*.tar.xz$" ~/stage3.txt)
+    url=$(grep -o "^stage3.*.tar.xz$" stage3.txt)
 
-    curl -o ~/stage3.tar.xz $url
+    curl -o stage3.tar.xz $url
 
-    tar xpf ~/stage3.tar.xz --xattrs-include='*.*' --numeric-owner
+    tar xpf stage3.tar.xz --xattrs-include='*.*' --numeric-owner
 
     if [ -d /mnt/gentoo/boot/ ]; then
-        rm ~/stage3.tar.xz
+        rm stage3.tar.xz
     fi
 
     printf '%s\n' "❯ Configuring Portage"
@@ -761,7 +761,7 @@ change_root() {
     fi
 
     printf '%s\n' "❯ copying install script"
-    cp ~/setup.sh /mnt/gentoo/
+    cp setup.sh /mnt/gentoo/
 
     printf '%s\n' "❯ changing root"
     mount --types proc /proc /mnt/gentoo/proc
