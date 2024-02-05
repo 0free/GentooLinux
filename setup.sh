@@ -659,25 +659,27 @@ install_base() {
 nameserver 1.0.0.1
 EOF
 
-    if [ ! -f stage3.tar.xz ]; then
-
-        printf '%s\n' "❯ downloading Gentoo Linux stage3"
-
-        url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
-
-        file="latest-stage3-amd64-llvm-systemd.txt"
-
-        curl -so stage3.txt "$url/$file"
-
-        file=$(grep -o "stage3.*.tar.xz" stage3.txt)
-
-        curl -o stage3.tar.xz "$url/$file"
-
-    fi
-
     if [ ! -d /mnt/gentoo/boot/ ]; then
+
+        if [ ! -f stage3.tar.xz ]; then
+
+            printf '%s\n' "❯ downloading Gentoo Linux stage3"
+
+            url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+
+            file="latest-stage3-amd64-llvm-systemd.txt"
+
+            curl -so stage3.txt "$url/$file"
+
+            file=$(grep -o "stage3.*.tar.xz" stage3.txt)
+
+            curl -o stage3.tar.xz "$url/$file"
+
+        fi
+
         printf '%s\n' "❯ extracting Gentoo Linux stage3"
         tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
+
     fi
 
     if [ -d /mnt/gentoo/boot/ ]; then
