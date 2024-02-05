@@ -459,11 +459,11 @@ setup_drive() {
         format_drive
     fi
 
-    if ! df -Th | grep -q "$rootDrive$"; then
+    if ! df -Th | grep -q "^$rootDrive"; then
         mount_root
     fi
 
-    if df -Th | grep -q "$rootDrive$"; then
+    if df -Th | grep -q "^$rootDrive"; then
         install_base
         mount_boot
         change_root
