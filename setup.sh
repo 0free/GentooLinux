@@ -1417,7 +1417,7 @@ EOF
 custom_commands() {
 
     printf '%s\n' "❯ downloading setup script"
-    url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup.sh'
+    url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
     curl -so /usr/local/bin/setup $url
     chmod 0711 /usr/local/bin/setup
 
@@ -1551,6 +1551,15 @@ unmount() {
 }
 
 set -e
+
+if [ ! -f /usr/local/bin/setup ]; then
+
+    printf '%s\n' "❯ downloading setup script"
+    url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
+    curl -so /usr/local/bin/setup $url
+    chmod 0711 /usr/local/bin/setup
+
+fi
 
 if grep -q 'step=' /mnt/gentoo/$f; then
 
