@@ -665,7 +665,7 @@ EOF
     
     file="latest-stage3-amd64-llvm-systemd.txt"
 
-    curl -o stage3.txt "$url/$file"
+    curl -so stage3.txt "$url/$file"
 
     file=$(grep -o "stage3.*.tar.xz" stage3.txt)
 
