@@ -679,12 +679,14 @@ FEATURES="\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS="\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 EOF
 
+    mkdir -p /etc/portage/binrepos.conf/
     cat > /etc/portage/binrepos.conf/gentoo.conf <<EOF
 [binhost]
 priority = 1
 sync-uri = $sync_uri
 EOF
 
+    mkdir -p /etc/portage/repos.conf/
     cat > /etc/portage/repos.conf/gentoo.conf<<EOF
 [DEFAULT]
 main-repo = gentoo
