@@ -691,70 +691,6 @@ EOF
         exit
     fi
 
-    printf '%s\n' "❯ Configuring Portage"
-
-    cat > /etc/portage/make.conf <<EOF
-COMMON_FLAGS="-O2 -pipe"
-CFLAGS="\${COMMON_FLAGS}"
-CXXFLAGS="\${COMMON_FLAGS}"
-FCFLAGS="\${COMMON_FLAGS}"
-FFLAGS="\${COMMON_FLAGS}"
-PORTDIR="/var/db/repo/gentoo"
-DISDIR="/var/cache/distfiles"
-PKGDIR="/var/cache/binpkgs"
-USE="-wayland -systemd -consolekit dbus als pipewire elogind png"
-ACCEPT_KEYWORDS="-amd64"
-INPUT_DEVICE="libinput synaptics"
-VIDEO_CARDS="nvidia"
-LC_MESSAGES=C.utf8
-GENTOO_MIRRORS="$mirror"
-FEATURES="\${FEATURES} binpkg-request-signature"
-EMERGE_DEFAULT_OPTS="\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
-EOF
-
-    mkdir -p /etc/portage/binrepos.conf/
-    cat > /etc/portage/binrepos.conf/gentoo.conf <<EOF
-[binhost]
-priority = 1
-sync-uri = $sync_uri
-EOF
-
-    mkdir -p /etc/portage/repos.conf/
-    cat > /etc/portage/repos.conf/gentoo.conf<<EOF
-[DEFAULT]
-main-repo = gentoo
-[gentoo]
-priority = 2
-location = /var/db/repos/gentoo
-sync-type = rsync
-sync-uri = rsync://rsync.gentoo.org/gentoo-portage
-auto-sync = yes
-EOF
-
-    cat > /etc/portage/repos.conf/the-pit.conf <<EOF
-[the-pit]
-priority = 3
-location = /var/db/repos/the-pit
-sync-type = git
-sync-uri = git://me.org/me/the-pit.git
-auto-sync = true
-EOF
-
-    mkdir -p /etc/portage/repos.conf
-    cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
-
-    emerge-webrsync
-    emerge --sync --quiet
-    emaint sync -r the-pit
-
-    printf '%s\n' "❯ configuring systemd"
-    mkdir -p /etc/portage/package.use/
-    echo "sys-apps/systemd boot" >> /etc/portage/package.use/systemd
-    emerge -g --root=/mnt/gentoo --config-root=/mnt/gentoo sys-apps/systemd
-
-    printf '%s\n' "❯ adding CloudFlare DNS"
-    ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
-
     mount_boot
 
 }
@@ -817,6 +753,70 @@ set_fstab() {
 }
 
 configure_gentoo() {
+
+    printf '%s\n' "❯ adding CloudFlare DNS"
+    ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+    printf '%s\n' "❯ Configuring Portage"
+
+    cat > /etc/portage/make.conf <<EOF
+COMMON_FLAGS="-O2 -pipe"
+CFLAGS="\${COMMON_FLAGS}"
+CXXFLAGS="\${COMMON_FLAGS}"
+FCFLAGS="\${COMMON_FLAGS}"
+FFLAGS="\${COMMON_FLAGS}"
+PORTDIR="/var/db/repo/gentoo"
+DISDIR="/var/cache/distfiles"
+PKGDIR="/var/cache/binpkgs"
+USE="-wayland -systemd -consolekit dbus als pipewire elogind png"
+ACCEPT_KEYWORDS="-amd64"
+INPUT_DEVICE="libinput synaptics"
+VIDEO_CARDS="nvidia"
+LC_MESSAGES=C.utf8
+GENTOO_MIRRORS="$mirror"
+FEATURES="\${FEATURES} binpkg-request-signature"
+EMERGE_DEFAULT_OPTS="\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
+EOF
+
+    mkdir -p /etc/portage/binrepos.conf/
+    cat > /etc/portage/binrepos.conf/gentoo.conf <<EOF
+[binhost]
+priority = 1
+sync-uri = $sync_uri
+EOF
+
+    mkdir -p /etc/portage/repos.conf/
+    cat > /etc/portage/repos.conf/gentoo.conf<<EOF
+[DEFAULT]
+main-repo = gentoo
+[gentoo]
+priority = 2
+location = /var/db/repos/gentoo
+sync-type = rsync
+sync-uri = rsync://rsync.gentoo.org/gentoo-portage
+auto-sync = yes
+EOF
+
+    cat > /etc/portage/repos.conf/the-pit.conf <<EOF
+[the-pit]
+priority = 3
+location = /var/db/repos/the-pit
+sync-type = git
+sync-uri = git://me.org/me/the-pit.git
+auto-sync = true
+EOF
+
+    mkdir -p /etc/portage/repos.conf
+    cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
+
+    emerge-webrsync
+    emerge --sync --quiet
+    emaint sync -r the-pit
+
+    printf '%s\n' "❯ configuring systemd"
+    mkdir -p /etc/portage/package.use/
+    echo "sys-apps/systemd boot" >> /etc/portage/package.use/systemd
+    emerge -g --root=/mnt/gentoo --config-root=/mnt/gentoo sys-apps/systemd
 
     printf '%s\n' "❯ setting locales"
 
