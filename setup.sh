@@ -1561,7 +1561,7 @@ if [ ! -f /usr/local/bin/setup ]; then
 
 fi
 
-if grep -q 'step=' /mnt/gentoo/list; then
+if [ -f /mnt/gentoo/list ]; then
 
     change_root
 
