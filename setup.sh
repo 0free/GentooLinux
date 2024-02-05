@@ -659,25 +659,30 @@ install_base() {
 nameserver 1.0.0.1
 EOF
 
+    if [ ! -f stage3.tar.xz ]; then
 
-    printf '%s\n' "❯ downloading Gentoo Linux stage3"
+        printf '%s\n' "❯ downloading Gentoo Linux stage3"
 
-    url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+        url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
 
-    file="latest-stage3-amd64-llvm-systemd.txt"
+        file="latest-stage3-amd64-llvm-systemd.txt"
 
-    curl -so stage3.txt "$url/$file"
+        curl -so stage3.txt "$url/$file"
 
-    file=$(grep -o "stage3.*.tar.xz" stage3.txt)
+        file=$(grep -o "stage3.*.tar.xz" stage3.txt)
 
-    curl -o stage3.tar.xz "$url/$file"
+        curl -o stage3.tar.xz "$url/$file"
+
+    fi
 
     printf '%s\n' "❯ extracting Gentoo Linux stage3"
-
     tar xpf stage3.tar.xz --xattrs-include='*.*' --numeric-owner
 
     if [ -d /mnt/gentoo/boot/ ]; then
         rm stage3.tar.xz
+    else
+        printf '%s\n' "ERROR: failed to extract tar file"
+        exit
     fi
 
     printf '%s\n' "❯ Configuring Portage"
