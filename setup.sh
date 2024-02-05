@@ -760,7 +760,7 @@ change_root() {
     if ! grep -q 'step=' $f; then
         printf '%s\n' "❯ copying $f"
         printf '\n%s' 'step=0' >> $f
-        cp $f /mnt/gentoo/root/
+        cp $f /mnt/gentoo/
     fi
 
     printf '%s\n' "❯ copying install script"
@@ -1552,8 +1552,7 @@ unmount() {
 
 set -e
 
-
-if [ -f /mnt/gentoo/$f ]; then
+if grep -q 'step=' /mnt/gentoo/$f; then
 
     change_root
 
