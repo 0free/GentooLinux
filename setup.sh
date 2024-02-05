@@ -669,15 +669,11 @@ install_base() {
         if [ ! -f stage3.tar.xz ]; then
 
             printf '%s\n' "❯ downloading Gentoo Linux stage3"
-
             url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
-
             file="latest-stage3-amd64-llvm-systemd.txt"
-
             curl -so stage3.txt "$url/$file"
-
             file=$(grep -o "stage3.*.tar.xz" stage3.txt)
-
+            rm stage3.txt
             curl -o stage3.tar.xz "$url/$file"
 
         fi
@@ -1585,7 +1581,7 @@ set -e
 
 if [ ! -f /usr/local/bin/setup ]; then
 
-    printf '%s\n' "❯ downloading setup script"
+    printf '%s\n' "❯ downloading setup"
     url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
     curl -so /usr/local/bin/setup $url
     chmod 0711 /usr/local/bin/setup
