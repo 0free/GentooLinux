@@ -2,7 +2,7 @@
 
 timezone='Asia/Muscat'
 ZFSpool='rpool'
-mirror='rsync://mirror.leaseweb.com/gentoo/'
+mirror='https://mirror.leaseweb.com/gentoo/'
 sync_uri='https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/'
 
 pkg_list() {
