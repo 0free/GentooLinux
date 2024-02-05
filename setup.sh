@@ -675,8 +675,10 @@ EOF
 
     fi
 
-    printf '%s\n' "❯ extracting Gentoo Linux stage3"
-    tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
+    if [ ! -d /mnt/gentoo/boot/ ]; then
+        printf '%s\n' "❯ extracting Gentoo Linux stage3"
+        tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
+    fi
 
     if [ -d /mnt/gentoo/boot/ ]; then
         rm stage3.tar.xz
@@ -691,7 +693,7 @@ EOF
 COMMON_FLAGS="-O2 -pipe"
 CFLAGS="\${COMMON_FLAGS}"
 CXXFLAGS="\${COMMON_FLAGS}"
-FCFLAGS="$\{COMMON_FLAGS}"
+FCFLAGS="\${COMMON_FLAGS}"
 FFLAGS="\${COMMON_FLAGS}"
 PORTDIR="/var/db/repo/gentoo"
 DISDIR="/var/cache/distfiles"
