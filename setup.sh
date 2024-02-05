@@ -683,7 +683,9 @@ EOF
     fi
 
     if [ -d /mnt/gentoo/boot/ ]; then
-        rm stage3.tar.xz
+        if [ -f stage3.tar.xz ]; then
+            rm stage3.tar.xz
+        fi
     else
         printf '%s\n' "ERROR: failed to extract tar file"
         exit
