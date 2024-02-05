@@ -1,6 +1,6 @@
 #!/bin/bash
 
-f='~/list'
+f="$(printf $HOME)/list"
 timezone='Asia/Muscat'
 ZFSpool='rpool'
 mirror='rsync://mirror.leaseweb.com/gentoo/'
@@ -346,7 +346,7 @@ init_drive() {
     printf '%s\n' '❯ created by Saif AlSubhi'
     for i in $(seq 1 100); do printf -- '-%.0s' $i; done
     printf '\n'
-    lsblk -o name,type,fstype,size,fsused,mountpoint,parttypename,label,model
+    lsblk -o name,type,fstype,size,fsused,mountpoint,parttypename,label,model | grep -E "^NAME|^nvme.*|sd.*"
     for i in $(seq 1 100); do printf -- '-%.0s' $i; done
     printf '\n'
 
