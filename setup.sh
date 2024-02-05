@@ -759,7 +759,7 @@ change_root() {
     if ! grep -q 'step=' list; then
         printf '%s\n' "❯ copying list file"
         printf '\n%s' 'step=0' >> list
-        cp $f /mnt/gentoo/
+        cp list /mnt/gentoo/
     fi
 
     printf '%s\n' "❯ copying install script"
@@ -1567,7 +1567,7 @@ if grep -q 'step=' /mnt/gentoo/list; then
 
 else
 
-    if [ -f $f ]; then
+    if [ -f list ]; then
 
         drive=$(. list; printf '%s' $drive)
         filesystem=$(. list; printf '%s' $filesystem)
