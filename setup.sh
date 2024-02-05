@@ -463,6 +463,12 @@ setup_drive() {
         mount_root
     fi
 
+    if printf '%s' $recoverySize | grep -q GiB; then
+        if ! df -Th | grep -q "^$recoveryDrive"; then
+            mount_recovery
+        fi
+    fi
+
     if df -Th | grep -q "^$rootDrive"; then
         install_base
         mount_boot
@@ -504,7 +510,7 @@ format_drive() {
 
     printf '%s\n' "bootDrive=$bootDrive" >> list
 
-    if printf '%s' $recoverySize | grep -q GiB; then
+    if printf '%s' $recoverySize | grep -q 'GiB'; then
 
         printf '%s\n' "❯ creating recovery partition"
         sgdisk -n 0:0:+ $recoverySize -c 0:RECOVERY -t 0:8300 $drive
@@ -513,21 +519,11 @@ format_drive() {
         printf '%s\n' "recoveryDrive=$recoveryDrive" >> list
 
         printf '%s\n' "❯ creating recovery filesystem"
-        if [ "$filesystem" = 'zfs' ]; then
-            bcachefs format --compression=lz4 $recoveryDrive
-        elif [ "$filesystem" = 'bcachefs' ]; then
-            bcachefs format --compression=lz4 $recoveryDrive
-        elif [ "$filesystem" = 'btrfs' ]; then
-            printf '%s\n' 'Y' | mkfs.btrfs  -f -L btrfs $recoveryDrive
-        elif [ "$filesystem" = 'ext4' ]; then
-            printf '%s\n' 'Y' | mkfs.ext4 -L ext4 $recoveryDrive
-        elif [ "$filesystem" = 'xfs' ]; then
-            printf '%s\n' 'Y' | mkfs.xfs -f -L xfs $recoveryDrive
-        fi
+        printf '%s\n' 'Y' | mkfs.ext4 -L RECOVERY $recoveryDrive
 
     fi
 
-    if printf '%s' $swapSize | grep -q GiB; then
+    if printf '%s' $swapSize | grep -q 'GiB'; then
 
         printf '%s\n' "❯ creating swap partition"
         sgdisk -n 0:0:+$swapSize -c 0:SWAP -t 0:8200 $drive
@@ -652,6 +648,20 @@ mount_root() {
 
 }
 
+mount_recovery() {
+
+    mkdir -p /mnt/recovery
+
+    printf '%s\n' "❯ mounting recovery drive"
+    mount -t ext4 $recoveryDrive /mnt/recovery
+
+    if ! df -Th | grep -q '/mnt/recovery'; then
+        printf '%s\n' "ERROR: recovery drive is not mounted"
+        exit
+    fi
+
+}
+
 install_base() {
 
     printf '%s\n' "❯ adding CloudFlare DNS"
@@ -677,8 +687,13 @@ EOF
 
         fi
 
-        printf '%s\n' "❯ extracting Gentoo Linux stage3"
+        printf '%s\n' "❯ extracting Gentoo Linux stage3 to root partition"
         tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
+
+        if printf '%s' $recoverySize | grep -q GiB; then
+            printf '%s\n' "❯ extracting Gentoo Linux stage3 to recovery partition"
+            tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
+        fi
 
     fi
 
@@ -689,6 +704,10 @@ EOF
     else
         printf '%s\n' "ERROR: failed to extract tar file"
         exit
+    fi
+
+    if grep -q 'GiB' $f; then
+        mkdir /recovery/
     fi
 
     mount_boot
@@ -739,7 +758,15 @@ set_fstab() {
 
     bootUUID=$(blkid $bootDrive -o export | grep ^UUID=)
 
-    printf '\n%s\n' "$bootUUID /boot vfat x-systemd.automount,rw,ssd,noatime,autodefrag 0 0" >> /etc/fstab
+    entry="$bootUUID /boot vfat x-systemd.automount,rw,ssd,noatime,autodefrag 0 0"
+
+    printf '\n%s\n' "$entry" >> /etc/fstab
+
+    recoveryUUID=$(blkid $rootDrive -o export | grep ^UUID=)
+
+    entry="$recoveryUUID /recovery $filesystem x-systemd.automount,rw,ssd,noatime,autodefrag,compression=lz4 0 0"
+
+    printf '\n%s\n' "$entry" > /etc/fstab
 
     if grep -q swapDrive list; then
         swapUUID=$(blkid $swapDrive -o export | grep ^UUID=)
