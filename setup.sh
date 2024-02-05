@@ -659,6 +659,24 @@ install_base() {
 nameserver 1.0.0.1
 EOF
 
+    printf '%s\n' "❯ installing Gentoo Linux stage3"
+
+    url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd/latest-stage3-amd64-llvm-systemd.txt"
+
+    curl -o ~/stage3.txt $url
+
+    url=$(grep -o "^stage3.*.tar.xz$" ~/stage3.txt)
+
+    curl -o ~/stage3.tar.xz $url
+
+    tar xpf ~/stage3.tar.xz --xattrs-include='*.*' --numeric-owner
+
+    if [ -d /mnt/gentoo/boot/ ]; then
+        rm ~/stage3.tar.xz
+    fi
+
+    printf '%s\n' "❯ Configuring Portage"
+
     printf '%s\n' "❯ Configuring Portage"
     cat > /etc/portage/make.conf <<EOF
 COMMON_FLAGS="-O2 -pipe"
@@ -713,28 +731,6 @@ EOF
     emerge-webrsync
     emerge --sync --quiet
     emaint sync -r the-pit
-
-    printf '%s\n' "❯ installing Gentoo Linux stage3"
-
-    url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd/latest-stage3-amd64-llvm-systemd.txt"
-
-    curl -o ~/stage3.txt $url
-
-    url=$(grep -o "^stage3.*.tar.xz$" ~/stage3.txt)
-
-    curl -o ~/stage3.tar.xz $url
-
-    tar xpf ~/stage3.tar.xz --xattrs-include='*.*' --numeric-owner
-
-    if [ -d /mnt/gentoo/boot/ ]; then
-        rm ~/stage3.tar.xz
-    fi
-
-    printf '%s\n' "❯ Configuring Portage"
-    mkdir -p /mnt/gentoo/etc/portage/repos.conf/
-    cp /etc/portage/*.conf /mnt/gentoo/etc/portage/
-    cp /etc/portage/repos.conf/*.conf /mnt/gentoo/etc/portage/repos.conf/
-    cp /etc/portage/binrepos.conf/*.conf /mnt/gentoo/etc/portage/binrepos.conf/
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
