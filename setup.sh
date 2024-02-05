@@ -659,10 +659,11 @@ install_base() {
 nameserver 1.0.0.1
 EOF
 
-    printf '%s\n' "❯ installing Gentoo Linux stage3"
+
+    printf '%s\n' "❯ downloading Gentoo Linux stage3"
 
     url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
-    
+
     file="latest-stage3-amd64-llvm-systemd.txt"
 
     curl -so stage3.txt "$url/$file"
@@ -670,6 +671,8 @@ EOF
     file=$(grep -o "stage3.*.tar.xz" stage3.txt)
 
     curl -o stage3.tar.xz "$url/$file"
+
+    printf '%s\n' "❯ extracting Gentoo Linux stage3"
 
     tar xpf stage3.tar.xz --xattrs-include='*.*' --numeric-owner
 
@@ -679,7 +682,6 @@ EOF
 
     printf '%s\n' "❯ Configuring Portage"
 
-    printf '%s\n' "❯ Configuring Portage"
     cat > /etc/portage/make.conf <<EOF
 COMMON_FLAGS="-O2 -pipe"
 CFLAGS="\${COMMON_FLAGS}"
