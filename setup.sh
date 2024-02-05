@@ -664,11 +664,6 @@ mount_recovery() {
 
 install_base() {
 
-    printf '%s\n' "❯ adding CloudFlare DNS"
-    cat > /etc/resolv.conf <<EOF
-nameserver 1.0.0.1
-EOF
-
     if [ ! -d /mnt/gentoo/boot/ ]; then
 
         if [ ! -f stage3.tar.xz ]; then
@@ -704,10 +699,6 @@ EOF
     else
         printf '%s\n' "ERROR: failed to extract tar file"
         exit
-    fi
-
-    if grep -q 'GiB' $f; then
-        mkdir /recovery/
     fi
 
     mount_boot
