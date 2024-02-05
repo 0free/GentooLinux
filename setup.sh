@@ -676,7 +676,7 @@ EOF
     fi
 
     printf '%s\n' "❯ extracting Gentoo Linux stage3"
-    tar xpf stage3.tar.xz --xattrs-include='*.*' --numeric-owner
+    tar -xpf stage3.tar.xz --xattrs-include='*.*' --numeric-owner
 
     if [ -d /mnt/gentoo/boot/ ]; then
         rm stage3.tar.xz
