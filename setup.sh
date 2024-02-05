@@ -661,13 +661,15 @@ EOF
 
     printf '%s\n' "❯ installing Gentoo Linux stage3"
 
-    url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd/latest-stage3-amd64-llvm-systemd.txt"
+    url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+    
+    file="latest-stage3-amd64-llvm-systemd.txt"
 
-    curl -o stage3.txt $url
+    curl -o stage3.txt "$url/$file"
 
-    url=$(grep -o "^stage3.*.tar.xz$" stage3.txt)
+    file=$(grep -o "stage3.*.tar.xz" stage3.txt)
 
-    curl -o stage3.tar.xz $url
+    curl -o stage3.tar.xz "$url/$file"
 
     tar xpf stage3.tar.xz --xattrs-include='*.*' --numeric-owner
 
