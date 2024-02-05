@@ -1,6 +1,6 @@
 #!/bin/bash
 
-f='$HOME/list'
+f='~/list'
 timezone='Asia/Muscat'
 ZFSpool='rpool'
 mirror='rsync://mirror.leaseweb.com/gentoo/'
