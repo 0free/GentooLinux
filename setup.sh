@@ -731,7 +731,7 @@ install_base() {
 
     fi
 
-    mkdir -p /var/db/repo/gentoo/
+    mkdir -p /mnt/var/db/repos/gentoo/
 
     mount_boot
 
@@ -1616,7 +1616,7 @@ unmount() {
 set -e
 
 if grep -q 'step=' list; then
-    if ! printf $(whoami) | grep -q 'root'; then
+    if printf $(whoami) | grep -q 'root'; then
         printf '%s\n' "❯ switching to su"
         env-update
         source /etc/profile
