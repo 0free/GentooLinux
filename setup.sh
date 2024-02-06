@@ -731,7 +731,7 @@ install_base() {
 
     fi
 
-    mkdir -p /mnt/gentoo/var/db/repos/gentoo/metadata/
+    mkdir -p /mnt/gentoo/var/db/repo/gentoo/metadata/
 
     mount_boot
 
@@ -823,7 +823,7 @@ EOF
 
     printf '%s\n' "❯ Configuring Portage"
 
-    rm -f /var/db/repos/gentoo/metadata/timestamp.x
+    rm -f /var/db/repo/gentoo/metadata/timestamp.x
 
     cat > /etc/portage/make.conf <<EOF
 COMMON_FLAGS="-O2 -pipe"
@@ -857,7 +857,7 @@ EOF
 main-repo = gentoo
 [gentoo]
 priority = 2
-location = /var/db/repos/gentoo/
+location = /var/db/repo/gentoo/
 sync-type = rsync
 sync-uri = rsync://rsync.gentoo.org/gentoo-portage
 auto-sync = yes
