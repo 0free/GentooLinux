@@ -806,7 +806,7 @@ configure_gentoo() {
 
     printf '%s\n' "❯ adding CloudFlare DNS"
     mkdir -p /run/systemd/resolve/
-    cat /run/systemd/resolve/resolv.conf << EOF
+    cat > /run/systemd/resolve/resolv.conf << EOF
 nameserver 1.0.0.1
 EOF
     ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
