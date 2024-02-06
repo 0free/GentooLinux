@@ -849,6 +849,7 @@ EOF
     cat > /etc/portage/repos.conf/bin.conf <<EOF
 [binhost]
 priority = 1
+sync-type = https
 sync-uri = $sync_uri
 EOF
 
