@@ -731,7 +731,7 @@ install_base() {
 
     fi
 
-    mkdir -p /mnt/gentoo/var/db/repos/gentoo/
+    mkdir -p /mnt/gentoo/var/db/repos/gentoo/metadata/
     mkdir -p /mnt/gentoo/var/db/repos/the-pit/metadata/
 
     mount_boot
@@ -827,6 +827,8 @@ masters = gentoo
 EOF
 
     printf '%s\n' "❯ Configuring Portage"
+
+    rm -f /var/db/repos/gentoo/metadata/timestamp.x
 
     cat > /etc/portage/make.conf <<EOF
 COMMON_FLAGS="-O2 -pipe"
