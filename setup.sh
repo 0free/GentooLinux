@@ -731,8 +731,8 @@ install_base() {
 
     fi
 
-    mkdir -p /mnt/var/db/repos/gentoo/
-    mkdir -p /mnt/var/db/repos/the-pit/
+    mkdir -p /mnt/gentoo/var/db/repos/gentoo/
+    mkdir -p /mnt/gentoo/var/db/repos/the-pit/metadata/
 
     mount_boot
 
@@ -821,6 +821,10 @@ EOF
     else
         eselect profile set 2
     fi
+
+    cat > /var/db/repos/the-pit/metadata/layout.conf <<EOF
+masters = gentoo
+EOF
 
     printf '%s\n' "❯ Configuring Portage"
 
