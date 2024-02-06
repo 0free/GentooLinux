@@ -1618,7 +1618,6 @@ set -e
 if grep -q 'step=' list; then
     if printf $(whoami) | grep -q 'root'; then
         printf '%s\n' "❯ switching to su"
-        env-update
         source /etc/profile
         su root
     fi
