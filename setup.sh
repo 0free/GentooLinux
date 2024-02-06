@@ -732,6 +732,7 @@ install_base() {
     fi
 
     mkdir -p /mnt/var/db/repos/gentoo/
+    mkdir -p /mnt/var/db/repos/the-pit/
 
     mount_boot
 
@@ -819,9 +820,9 @@ CFLAGS="\${COMMON_FLAGS}"
 CXXFLAGS="\${COMMON_FLAGS}"
 FCFLAGS="\${COMMON_FLAGS}"
 FFLAGS="\${COMMON_FLAGS}"
-PORTDIR="/var/db/repo/gentoo"
-DISDIR="/var/cache/distfiles"
-PKGDIR="/var/cache/binpkgs"
+PORTDIR="/var/db/repo/gentoo/"
+DISDIR="/var/cache/distfiles/"
+PKGDIR="/var/cache/binpkgs/"
 USE="-wayland -systemd -consolekit dbus als pipewire elogind png"
 ACCEPT_KEYWORDS="-amd64"
 INPUT_DEVICE="libinput synaptics"
@@ -845,7 +846,7 @@ EOF
 main-repo = gentoo
 [gentoo]
 priority = 2
-location = /var/db/repos/gentoo
+location = /var/db/repos/gentoo/
 sync-type = rsync
 sync-uri = rsync://rsync.gentoo.org/gentoo-portage
 auto-sync = yes
@@ -854,7 +855,7 @@ EOF
     cat > /etc/portage/repos.conf/the-pit.conf <<EOF
 [the-pit]
 priority = 3
-location = /var/db/repos/the-pit
+location = /var/db/repos/the-pit/
 sync-type = git
 sync-uri = git://me.org/me/the-pit.git
 auto-sync = true
