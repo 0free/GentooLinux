@@ -702,6 +702,8 @@ install_base() {
         exit
     fi
 
+    mkdir -p /var/db/repo/gentoo/
+
     mount_boot
 
 }
@@ -1585,6 +1587,10 @@ unmount() {
 set -e
 
 if [ ! -f /usr/local/bin/setup ]; then
+
+    env-update
+    source /etc/profile
+    su root
 
     printf '%s\n' "❯ downloading setup"
     url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
