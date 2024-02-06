@@ -812,6 +812,16 @@ nameserver 1.0.0.1
 EOF
     ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
+    printf '%s\n' "❯ selecting profile"
+
+    if grep -q 'gnome' list; then
+        eselect profile set 3
+    elif grep -q 'kde' list; then
+        eselect profile set 4
+    else
+        eselect profile set 2
+    fi
+
     printf '%s\n' "❯ Configuring Portage"
 
     cat > /etc/portage/make.conf <<EOF
