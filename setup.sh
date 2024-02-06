@@ -732,7 +732,6 @@ install_base() {
     fi
 
     mkdir -p /mnt/gentoo/var/db/repos/gentoo/metadata/
-    mkdir -p /mnt/gentoo/var/db/repos/the-pit/metadata/
 
     mount_boot
 
@@ -822,10 +821,6 @@ EOF
         eselect profile set 2
     fi
 
-    cat > /var/db/repos/the-pit/metadata/layout.conf <<EOF
-masters = gentoo
-EOF
-
     printf '%s\n' "❯ Configuring Portage"
 
     rm -f /var/db/repos/gentoo/metadata/timestamp.x
@@ -868,22 +863,12 @@ sync-uri = rsync://rsync.gentoo.org/gentoo-portage
 auto-sync = yes
 EOF
 
-    cat > /etc/portage/repos.conf/the-pit.conf <<EOF
-[the-pit]
-priority = 3
-location = /var/db/repos/the-pit/
-sync-type = git
-sync-uri = git://me.org/me/the-pit.git
-auto-sync = true
-EOF
-
     mkdir -p /etc/portage/repos.conf/
     cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 
     emerge-webrsync
-    emerge dev-vcs/git
     emerge --sync --quiet
-    emaint sync -r the-pit
+    emerge dev-vcs/git
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
