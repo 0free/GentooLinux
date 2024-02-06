@@ -720,8 +720,8 @@ change_root() {
 
     if ! grep -q 'step=' list; then
         printf '%s\n' "❯ copying list file"
-        printf '\n%s' 'step=0' >> list
         cp list /mnt/gentoo/
+        printf '\n%s' 'step=0' >> /mnt/gentoo/list
     fi
 
     printf '%s\n' "❯ copying install script"
