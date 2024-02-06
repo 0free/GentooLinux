@@ -1588,9 +1588,11 @@ set -e
 
 if [ ! -f /usr/local/bin/setup ]; then
 
-    env-update
-    source /etc/profile
-    su root
+    if grep -q 'step=' list; then
+        env-update
+        source /etc/profile
+        su root
+    fi
 
     printf '%s\n' "❯ downloading setup"
     url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
