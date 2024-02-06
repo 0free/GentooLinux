@@ -8,7 +8,9 @@ mirror='https://mirror.leaseweb.com/gentoo/'
 
 sync_uri='https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/'
 
-stage3="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+stage3_root="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+
+stage3_recovery="https://gentoo.osuosl.org/releases/amd64/autobuilds/current-stage3-amd64-openrc/"
 
 pkg_list() {
 
@@ -674,7 +676,7 @@ install_base() {
         if [ ! -f stage3.tar.xz ]; then
 
             printf '%s\n' "❯ downloading Gentoo Linux stage3"
-            url="$stage3"
+            url="$stage3_root"
             file="latest-stage3-amd64-llvm-systemd.txt"
             curl -so stage3.txt "$url/$file"
             file=$(grep -o "stage3.*.tar.xz" stage3.txt)
@@ -686,14 +688,41 @@ install_base() {
         printf '%s\n' "❯ extracting Gentoo Linux stage3 to root partition"
         tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
 
-        if printf '%s' $recoverySize | grep -q GiB; then
-            printf '%s\n' "❯ extracting Gentoo Linux stage3 to recovery partition"
-            tar -xpf stage3.tar.xz -C /mnt/gentoo/ --xattrs-include='*.*' --numeric-owner
+    fi
+
+    if [ -d /mnt/gentoo/boot/ ]; then
+        if [ -f stage3.tar.xz ]; then
+            rm stage3.tar.xz
+        fi
+    else
+        printf '%s\n' "ERROR: failed to extract tar file"
+        exit
+    fi
+
+    if [ ! -d /mnt/recovery/boot/ ]; then
+
+        if [ ! -f stage3.tar.xz ]; then
+
+            if printf '%s' $recoverySize | grep -q GiB; then
+
+                printf '%s\n' "❯ downloading Gentoo Linux stage3"
+                url="$stage3_recovery"
+                file="latest-stage3-amd64-openrc.txt"
+                curl -so stage3.txt "$url/$file"
+                file=$(grep -o "stage3.*.tar.xz" stage3.txt)
+                rm stage3.txt
+                curl -o stage3.tar.xz "$url/$file"
+
+                printf '%s\n' "❯ extracting Gentoo Linux stage3 to recovery partition"
+                tar -xpf stage3.tar.xz -C /mnt/recovery/ --xattrs-include='*.*' --numeric-owner
+
+            fi
+
         fi
 
     fi
 
-    if [ -d /mnt/gentoo/boot/ ]; then
+    if [ -d /mnt/recovery/boot/ ]; then
         if [ -f stage3.tar.xz ]; then
             rm stage3.tar.xz
         fi
