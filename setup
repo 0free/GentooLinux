@@ -1,8 +1,8 @@
 #!/bin/bash
 if curl -so /dev/null gentoo.org; then
     printf '%s\n' '>>> downloading Gentoo linux setup script'
-    curl -so ~/setup.sh https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup.sh
-    bash ~/setup.sh
+    curl -so setup.sh https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup.sh
+    bash setup.sh
 else
     printf '%s\n' 'no internet'
 fi
