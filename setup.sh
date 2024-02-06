@@ -1616,11 +1616,11 @@ unmount() {
 set -e
 
 if grep -q 'step=' list; then
-    if printf $(whoami) | grep -q 'root'; then
-        printf '%s\n' "❯ switching to su"
-        source /etc/profile
-        su root
-    fi
+
+    printf '%s\n' "❯ switching env"
+    env-update
+    source /etc/profile
+
 fi
 
 if [ ! -f /usr/local/bin/setup ]; then
