@@ -1,9 +1,14 @@
 #!/bin/bash
 
 timezone='Asia/Muscat'
+
 ZFSpool='rpool'
+
 mirror='https://mirror.leaseweb.com/gentoo/'
+
 sync_uri='https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/'
+
+stage3="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
 
 pkg_list() {
 
@@ -669,7 +674,7 @@ install_base() {
         if [ ! -f stage3.tar.xz ]; then
 
             printf '%s\n' "❯ downloading Gentoo Linux stage3"
-            url="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+            url="$stage3"
             file="latest-stage3-amd64-llvm-systemd.txt"
             curl -so stage3.txt "$url/$file"
             file=$(grep -o "stage3.*.tar.xz" stage3.txt)
@@ -1584,7 +1589,7 @@ if [ ! -f /usr/local/bin/setup ]; then
     printf '%s\n' "❯ downloading setup"
     url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
     curl -so /usr/local/bin/setup $url
-    chmod 0711 /usr/local/bin/setup
+    chmod 0755 /usr/local/bin/setup
 
 fi
 
@@ -1609,6 +1614,10 @@ else
         H="/home/$user"
 
         if grep -q 'step=' list; then
+
+            env-update
+            source /etc/profile
+            su root
 
             if [ $(. list; printf '%s' $step) = 14 ]; then
                 reboot
