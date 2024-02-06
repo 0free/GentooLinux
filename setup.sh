@@ -849,7 +849,8 @@ EOF
     cat > /etc/portage/repos.conf/bin.conf <<EOF
 [binhost]
 priority = 1
-sync-type = https
+PORTDIR = /var/db/repo/gentoo/bin/
+sync-type = rsync
 sync-uri = $sync_uri
 EOF
 
