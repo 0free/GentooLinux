@@ -1615,20 +1615,16 @@ unmount() {
 
 set -e
 
-if grep -q 'step=' list; then
+if ! grep -q 'step=' list; then
 
-    printf '%s\n' "❯ switching env"
-    env-update
-    source /etc/profile
+    if [ ! -f /usr/local/bin/setup ]; then
 
-fi
+        printf '%s\n' "❯ downloading setup"
+        url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
+        curl -so /usr/local/bin/setup $url
+        chmod 0755 /usr/local/bin/setup
 
-if [ ! -f /usr/local/bin/setup ]; then
-
-    printf '%s\n' "❯ downloading setup"
-    url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
-    curl -so /usr/local/bin/setup $url
-    chmod 0755 /usr/local/bin/setup
+    fi
 
 fi
 
@@ -1637,6 +1633,14 @@ if [ -f /mnt/gentoo/list ]; then
     change_root
 
 else
+
+    if grep -q 'step=' list; then
+
+        printf '%s\n' "❯ switching env"
+        env-update
+        source /etc/profile
+
+    fi
 
     if [ -f list ]; then
 
