@@ -877,10 +877,11 @@ sync-uri = git://me.org/me/the-pit.git
 auto-sync = true
 EOF
 
-    mkdir -p /etc/portage/repos.conf
+    mkdir -p /etc/portage/repos.conf/
     cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 
     emerge-webrsync
+    emerge dev-vcs/git
     emerge --sync --quiet
     emaint sync -r the-pit
 
