@@ -1587,7 +1587,7 @@ unmount() {
 set -e
 
 if grep -q 'step=' list; then
-    if [ $(whoami) -ne 'root' ]; then
+    if ! printf $(whoami) | grep -q 'root'; then
         env-update
         source /etc/profile
         su root
