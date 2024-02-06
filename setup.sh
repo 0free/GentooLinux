@@ -699,11 +699,11 @@ install_base() {
         exit
     fi
 
-    if [ ! -d /mnt/recovery/boot/ ]; then
+    if printf '%s' $recoverySize | grep -q GiB; then
 
-        if [ ! -f stage3.tar.xz ]; then
+        if [ ! -d /mnt/recovery/boot/ ]; then
 
-            if printf '%s' $recoverySize | grep -q GiB; then
+            if [ ! -f stage3.tar.xz ]; then
 
                 printf '%s\n' "❯ downloading Gentoo Linux stage3"
                 url="$stage3_recovery"
@@ -720,15 +720,15 @@ install_base() {
 
         fi
 
-    fi
-
-    if [ -d /mnt/recovery/boot/ ]; then
-        if [ -f stage3.tar.xz ]; then
-            rm stage3.tar.xz
+        if [ -d /mnt/recovery/boot/ ]; then
+            if [ -f stage3.tar.xz ]; then
+                rm stage3.tar.xz
+            fi
+        else
+            printf '%s\n' "ERROR: failed to extract tar file"
+            exit
         fi
-    else
-        printf '%s\n' "ERROR: failed to extract tar file"
-        exit
+
     fi
 
     mkdir -p /var/db/repo/gentoo/
