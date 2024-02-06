@@ -1586,13 +1586,15 @@ unmount() {
 
 set -e
 
-if [ ! -f /usr/local/bin/setup ]; then
-
-    if grep -q 'step=' list; then
+if grep -q 'step=' list; then
+    if [ $(whoami) -ne 'root' ]; then
         env-update
         source /etc/profile
         su root
     fi
+fi
+
+if [ ! -f /usr/local/bin/setup ]; then
 
     printf '%s\n' "❯ downloading setup"
     url='https://raw.githubusercontent.com/0free/GentooLinux/systemd/setup'
@@ -1622,10 +1624,6 @@ else
         H="/home/$user"
 
         if grep -q 'step=' list; then
-
-            env-update
-            source /etc/profile
-            su root
 
             if [ $(. list; printf '%s' $step) = 14 ]; then
                 reboot
