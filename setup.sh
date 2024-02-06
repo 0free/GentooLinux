@@ -844,27 +844,13 @@ FEATURES="\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS="\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 EOF
 
-    mkdir -p /etc/portage/binrepos.conf/
-    cat > /etc/portage/binrepos.conf/gentoo.conf <<EOF
+    mkdir -p /etc/portage/repos.conf/
+    cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
+    cat > /etc/portage/repos.conf/bin.conf <<EOF
 [binhost]
 priority = 1
 sync-uri = $sync_uri
 EOF
-
-    mkdir -p /etc/portage/repos.conf/
-    cat > /etc/portage/repos.conf/gentoo.conf<<EOF
-[DEFAULT]
-main-repo = gentoo
-[gentoo]
-priority = 2
-location = /var/db/repo/gentoo/
-sync-type = rsync
-sync-uri = rsync://rsync.gentoo.org/gentoo-portage
-auto-sync = yes
-EOF
-
-    mkdir -p /etc/portage/repos.conf/
-    cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 
     emerge-webrsync
     emerge --sync --quiet
