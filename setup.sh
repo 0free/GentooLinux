@@ -647,6 +647,7 @@ mount_root() {
         printf '%s\n' "❯ mounting root drive"
         mount -t $filesystem $rootDrive /mnt/gentoo
     fi
+
     if ! df -Th | grep -q '/mnt/gentoo'; then
         printf '%s\n' "ERROR: root drive is not mounted"
         exit
@@ -738,9 +739,16 @@ install_base() {
 
 mount_boot() {
 
-    printf '%s\n' "❯ mounting boot drive"
-    mount -t vfat $bootDrive /mnt/gentoo/boot/
-    mkdir -p /mnt/gentoo/boot/efi/boot/
+    if ! df -Th | grep -q '/mnt/gentoo/boot'; then
+        printf '%s\n' "❯ mounting boot drive"
+        mount -t vfat $bootDrive /mnt/gentoo/boot/
+        mkdir -p /mnt/gentoo/boot/efi/boot/
+    fi
+
+    if ! df -Th | grep -q '/mnt/gentoo/boot'; then
+        printf '%s\n' "ERROR: boot drive is not mounted"
+        exit
+    fi
 
 }
 
