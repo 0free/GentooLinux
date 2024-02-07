@@ -856,6 +856,11 @@ sync-type = rsync
 sync-uri = $sync_uri
 EOF
 
+    mkdir -p /var/db/repos/the-pit/metadata/
+    cat > /var/db/repos/the-pit/metadata/layout.conf <<EOF
+masters = gentoo
+EOF
+
     emerge-webrsync
     emerge --sync --quiet
     emerge dev-vcs/git
