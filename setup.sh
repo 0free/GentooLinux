@@ -478,7 +478,6 @@ setup_drive() {
 
     if df -Th | grep -q "^$rootDrive"; then
         install_base
-        mount_boot
         change_root
     fi
 
