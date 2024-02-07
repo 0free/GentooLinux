@@ -869,6 +869,7 @@ EOF
 masters = gentoo
 EOF
 
+    mkdir -p /var/db/repos/local/profiles/
     cat > /var/db/repos/local/profiles/repo_name <<EOF
 local
 EOF
