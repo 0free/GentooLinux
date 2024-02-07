@@ -842,15 +842,26 @@ EMERGE_DEFAULT_OPTS="\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 EOF
 
     mkdir -p /etc/portage/repos.conf/
+
     cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
+
     cat > /etc/portage/repos.conf/bin.conf <<EOF
-[binhost]
+[bin]
 priority = 1
-PORTDIR = /var/db/repo/gentoo/
-DISDIR= /var/cache/distfiles/
-PKGDIR= /var/cache/binpkgs/
+location = /var/db/repos/bin/
 sync-type = rsync
 sync-uri = $sync_uri
+EOF
+
+    cat > /etc/portage/repos.conf/local.conf <<EOF
+[local]
+location = /var/db/repos/local/
+EOF
+
+    mkdir -p /var/db/repos/local/metadata/
+    cat > /var/db/repos/local/metadata/layout.conf <<EOF
+masters = gentoo
+profile-formats = portage-2
 EOF
 
     mkdir -p /var/db/repos/the-pit/metadata/
@@ -858,19 +869,13 @@ EOF
 masters = gentoo
 EOF
 
+    cat > /var/db/repos/local/profiles/repo_name <<EOF
+local
+EOF
+
     emerge-webrsync
     emerge --sync --quiet
     emerge dev-vcs/git
-
-    printf '%s\n' "❯ selecting profile"
-
-    if grep -q 'gnome' list; then
-        eselect profile set 3
-    elif grep -q 'kde' list; then
-        eselect profile set 4
-    else
-        eselect profile set 2
-    fi
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
