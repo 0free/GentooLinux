@@ -835,16 +835,19 @@ DISDIR = /var/cache/distfiles/
 PKGDIR = /var/cache/binpkgs/
 USE = "-wayland -systemd -consolekit dbus als pipewire elogind png"
 ACCEPT_KEYWORDS = "-amd64"
+ELIBC = "glibc"
+KERNEL = "linux"
 INPUT_DEVICE = "libinput synaptics"
-VIDEO_CARDS = "nvidia"
+VIDEO_CARDS = "amdgpu intel nvidia virgl d3d12"
 LC_MESSAGES = C.utf8
 GENTOO_MIRRORS = "$mirror"
 FEATURES = "\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
+ACCEPT_LICENSE="*"
 EOF
 
-    mkdir -p /var/db/repo/gentoo/profiles/
-    ln -sfn /etc/portage/make.conf /var/db/repo/gentoo/profiles/make.defaults
+    mkdir -p /var/db/repo/gentoo/profiles/base/
+    ln -sfn /etc/portage/make.conf /var/db/repo/gentoo/profiles/base/make.defaults
 
     mkdir -p /etc/portage/repos.conf/
     cat > /etc/portage/repos.conf/gentoo.conf <<EOF
