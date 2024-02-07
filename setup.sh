@@ -850,13 +850,15 @@ EOF
 [binhost]
 priority = 1
 PORTDIR = /var/db/repo/gentoo/bin/
+DISDIR= /var/cache/distfiles/
+PKGDIR= /var/cache/binpkgs/
 sync-type = rsync
 sync-uri = $sync_uri
 EOF
 
+    emerge dev-vcs/git
     emerge-webrsync
     emerge --sync --quiet
-    emerge dev-vcs/git
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
