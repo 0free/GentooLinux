@@ -6,7 +6,9 @@ ZFSpool='rpool'
 
 mirror='https://mirror.leaseweb.com/gentoo/'
 
-sync_uri='https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/'
+portage_mirror="rsync://rsync8.de.gentoo.org/gentoo-portage/"
+
+bin_mirror='https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/'
 
 stage3_root="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
 
@@ -848,7 +850,7 @@ main-repo = gentoo
 [gentoo]
 location = /usr/portage
 sync-type = rsync
-sync-uri = rsync://rsync.europe.gentoo.org/gentoo-portage
+sync-uri = "$portage_mirror"
 auto-sync = yes
 EOF
 
@@ -858,7 +860,7 @@ EOF
 priority = 1
 location = /var/db/repos/bin/
 sync-type = rsync
-sync-uri = $sync_uri
+sync-uri = "$bin_mirror"
 EOF
 
     cat > /etc/portage/repos.conf/local.conf <<EOF
