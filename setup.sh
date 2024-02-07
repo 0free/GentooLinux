@@ -4,15 +4,21 @@ timezone='Asia/Muscat'
 
 ZFSpool='rpool'
 
+profile="default/linux/amd64/17.1/no-multilib/systemd"
+
 mirror='https://mirror.leaseweb.com/gentoo/'
 
 portage_mirror="rsync://rsync8.de.gentoo.org/gentoo-portage/"
 
-bin_mirror='https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/'
+bin_mirror="https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/"
 
-stage3_root="https://distfiles.gentoo.org/releases/amd64/autobuilds/current-stage3-amd64-llvm-systemd"
+stage3_root="https://gentoo.osuosl.org/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-systemd/"
 
-stage3_recovery="https://gentoo.osuosl.org/releases/amd64/autobuilds/current-stage3-amd64-openrc/"
+stage3_root_file="latest-stage3-amd64-nomultilib-systemd.txt"
+
+stage3_recovery="https://gentoo.osuosl.org/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-openrc/"
+
+stage3_recovery_file="latest-stage3-amd64-nomultilib-openrc.txt"
 
 pkg_list() {
 
@@ -679,8 +685,7 @@ install_base() {
 
             printf '%s\n' "❯ downloading Gentoo Linux stage3"
             url="$stage3_root"
-            file="latest-stage3-amd64-llvm-systemd.txt"
-            curl -so stage3.txt "$url/$file"
+            curl -so stage3.txt "$url/$stage3_root_file"
             file=$(grep -o "stage3.*.tar.xz" stage3.txt)
             rm stage3.txt
             curl -o stage3.tar.xz "$url/$file"
@@ -709,8 +714,7 @@ install_base() {
 
                 printf '%s\n' "❯ downloading Gentoo Linux stage3"
                 url="$stage3_recovery"
-                file="latest-stage3-amd64-openrc.txt"
-                curl -so stage3.txt "$url/$file"
+                curl -so stage3.txt "$url/$stage3_recovery_file"
                 file=$(grep -o "stage3.*.tar.xz" stage3.txt)
                 rm stage3.txt
                 curl -o stage3.tar.xz "$url/$file"
@@ -846,8 +850,7 @@ EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 ACCEPT_LICENSE="*"
 EOF
 
-    mkdir -p /var/db/repo/gentoo/profiles/base/
-    ln -sfn /etc/portage/make.conf /var/db/repo/gentoo/profiles/base/make.defaults
+    mkdir -p /var/db/repos/gentoo/profiles/$profile/
 
     mkdir -p /etc/portage/repos.conf/
     cat > /etc/portage/repos.conf/gentoo.conf <<EOF
