@@ -4,7 +4,7 @@ timezone='Asia/Muscat'
 
 ZFSpool='rpool'
 
-profile="default/linux/amd64/17.1/no-multilib/systemd"
+profile="default/linux/amd64/23.0/no-multilib/systemd"
 
 mirror='https://mirror.leaseweb.com/gentoo/'
 
@@ -824,7 +824,7 @@ nameserver 1.0.0.1
 EOF
     ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
-    printf '%s\n' "❯ Configuring Portage"
+    printf '%s\n' "❯ configuring Portage"
 
     rm -f /var/db/repo/gentoo/metadata/timestamp.x
 
@@ -849,8 +849,6 @@ FEATURES = "\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 ACCEPT_LICENSE="*"
 EOF
-
-    mkdir -p /var/db/repos/gentoo/profiles/$profile/
 
     mkdir -p /etc/portage/repos.conf/
     cat > /etc/portage/repos.conf/gentoo.conf <<EOF
@@ -899,6 +897,9 @@ EOF
     cat > /var/db/repos/local/profiles/repo_name <<EOF
 local
 EOF
+
+    printf '%s\n' "❯ configuring profile"
+    eselect set $profile
 
     emerge-webrsync
     emerge --sync --quiet
