@@ -823,27 +823,34 @@ EOF
     rm -f /var/db/repo/gentoo/metadata/timestamp.x
 
     cat > /etc/portage/make.conf <<EOF
-COMMON_FLAGS="-O2 -pipe"
-CFLAGS="\${COMMON_FLAGS}"
-CXXFLAGS="\${COMMON_FLAGS}"
-FCFLAGS="\${COMMON_FLAGS}"
-FFLAGS="\${COMMON_FLAGS}"
-PORTDIR="/var/db/repo/gentoo/"
-DISDIR="/var/cache/distfiles/"
-PKGDIR="/var/cache/binpkgs/"
-USE="-wayland -systemd -consolekit dbus als pipewire elogind png"
-ACCEPT_KEYWORDS="-amd64"
-INPUT_DEVICE="libinput synaptics"
-VIDEO_CARDS="nvidia"
-LC_MESSAGES=C.utf8
-GENTOO_MIRRORS="$mirror"
-FEATURES="\${FEATURES} binpkg-request-signature"
-EMERGE_DEFAULT_OPTS="\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
+COMMON_FLAGS = "-O2 -pipe"
+CFLAGS = "\${COMMON_FLAGS}"
+CXXFLAGS = "\${COMMON_FLAGS}"
+FCFLAGS = "\${COMMON_FLAGS}"
+FFLAGS = "\${COMMON_FLAGS}"
+PORTDIR = /var/db/repo/gentoo/
+DISDIR = /var/cache/distfiles/
+PKGDIR = /var/cache/binpkgs/
+USE = "-wayland -systemd -consolekit dbus als pipewire elogind png"
+ACCEPT_KEYWORDS = "-amd64"
+INPUT_DEVICE = "libinput synaptics"
+VIDEO_CARDS = "nvidia"
+LC_MESSAGES = C.utf8
+GENTOO_MIRRORS = "$mirror"
+FEATURES = "\${FEATURES} binpkg-request-signature"
+EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 EOF
 
     mkdir -p /etc/portage/repos.conf/
-
-    cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
+    cat > /etc/portage/repos.conf/gentoo.conf <<EOF
+[DEFAULT]
+main-repo = gentoo
+[gentoo]
+location = /usr/portage
+sync-type = rsync
+sync-uri = rsync://rsync.europe.gentoo.org/gentoo-portage
+auto-sync = yes
+EOF
 
     mkdir -p /var/db/repos/bin/
     cat > /etc/portage/repos.conf/bin.conf <<EOF
