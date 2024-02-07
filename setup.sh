@@ -818,16 +818,6 @@ nameserver 1.0.0.1
 EOF
     ln -snf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
-    printf '%s\n' "❯ selecting profile"
-
-    if grep -q 'gnome' list; then
-        eselect profile set 3
-    elif grep -q 'kde' list; then
-        eselect profile set 4
-    else
-        eselect profile set 2
-    fi
-
     printf '%s\n' "❯ Configuring Portage"
 
     rm -f /var/db/repo/gentoo/metadata/timestamp.x
@@ -871,6 +861,16 @@ EOF
     emerge-webrsync
     emerge --sync --quiet
     emerge dev-vcs/git
+
+    printf '%s\n' "❯ selecting profile"
+
+    if grep -q 'gnome' list; then
+        eselect profile set 3
+    elif grep -q 'kde' list; then
+        eselect profile set 4
+    else
+        eselect profile set 2
+    fi
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
