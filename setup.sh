@@ -845,6 +845,7 @@ EOF
 
     cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
 
+    mkdir -p /var/db/repos/bin/
     cat > /etc/portage/repos.conf/bin.conf <<EOF
 [bin]
 priority = 1
