@@ -854,13 +854,19 @@ sync-uri = "$portage_mirror"
 auto-sync = yes
 EOF
 
-    mkdir -p /var/db/repos/bin/
+    mkdir -p /var/db/repos/bin/metadata/
     cat > /etc/portage/repos.conf/bin.conf <<EOF
 [bin]
 priority = 1
 location = /var/db/repos/bin/
 sync-type = rsync
 sync-uri = "$bin_mirror"
+EOF
+
+    mkdir -p /var/db/repos/bin/metadata/
+    cat > /var/db/repos/bin/metadata/layout.conf <<EOF
+masters = gentoo
+profile-formats = portage-2
 EOF
 
     cat > /etc/portage/repos.conf/local.conf <<EOF
@@ -877,6 +883,7 @@ EOF
     mkdir -p /var/db/repos/the-pit/metadata/
     cat > /var/db/repos/the-pit/metadata/layout.conf <<EOF
 masters = gentoo
+profile-formats = portage-2
 EOF
 
     mkdir -p /var/db/repos/local/profiles/
