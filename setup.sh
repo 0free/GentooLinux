@@ -843,6 +843,7 @@ FEATURES = "\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
 EOF
 
+    mkdir -p /var/db/repos/gentoo/profiles/
     ln -sfn /etc/portage/make.conf /var/db/repos/gentoo/profiles/make.defaults
 
     mkdir -p /etc/portage/repos.conf/
