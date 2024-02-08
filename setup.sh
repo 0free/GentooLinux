@@ -907,6 +907,8 @@ profile-formats = portage-2
 EOF
 
     printf '%s\n' "❯ configuring profile"
+    eselect profile list
+    profile="$(eselect profile list | grep $profile | grep -Eo "[0-9]{1,2}")"
     eselect set $profile
 
     emerge-webrsync
