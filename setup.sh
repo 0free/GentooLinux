@@ -909,8 +909,13 @@ EOF
     emerge-webrsync
 
     printf '%s\n' "❯ configuring profile"
+
+    cat > /etc/portage/make.profile <<EOF
+
+EOF
+
     eselect profile list
-    profile="$(eselect profile list | grep $profile | grep -Eo "[0-9]{1,2}")"
+    #profile="$(eselect profile list | grep $profile | grep -Eo "[0-9]{1,2}")"
     eselect set $profile
 
     emerge --sync --quiet
