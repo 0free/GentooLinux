@@ -12,11 +12,11 @@ portage_mirror="rsync://rsync8.de.gentoo.org/gentoo-portage/"
 
 bin_mirror="https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/"
 
-stage3_root="https://gentoo.osuosl.org/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-systemd/"
+stage3_root="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-systemd/"
 
 stage3_root_file="latest-stage3-amd64-nomultilib-systemd.txt"
 
-stage3_recovery="https://gentoo.osuosl.org/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-openrc/"
+stage3_recovery="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-openrc/"
 
 stage3_recovery_file="latest-stage3-amd64-nomultilib-openrc.txt"
 
