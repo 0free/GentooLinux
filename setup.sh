@@ -907,6 +907,7 @@ profile-formats = portage-2
 EOF
 
     emerge-webrsync
+    emerge --update sys-apps/portage
 
     printf '%s\n' "❯ configuring profile"
 
