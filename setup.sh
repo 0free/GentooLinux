@@ -824,7 +824,7 @@ EOF
 
     printf '%s\n' "❯ configuring Portage"
 
-    rm -f /var/db/repo/gentoo/metadata/timestamp.x
+    rm -f /var/db/repos/gentoo/metadata/timestamp.x
 
     cat > /etc/portage/make.conf <<EOF
 COMMON_FLAGS = "-O2 -pipe"
@@ -832,7 +832,7 @@ CFLAGS = "\${COMMON_FLAGS}"
 CXXFLAGS = "\${COMMON_FLAGS}"
 FCFLAGS = "\${COMMON_FLAGS}"
 FFLAGS = "\${COMMON_FLAGS}"
-PORTDIR = /var/db/repo/gentoo/
+PORTDIR = /var/db/repos/gentoo/
 DISDIR = /var/cache/distfiles/
 PKGDIR = /var/cache/bin/
 RPMDIR = /var/cache/rpm/
