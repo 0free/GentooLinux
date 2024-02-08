@@ -6,7 +6,7 @@ ZFSpool='rpool'
 
 profile="default/linux/amd64/23.0/no-multilib/systemd"
 
-mirror='https://mirror.leaseweb.com/gentoo/'
+mirror="http://distfiles.gentoo.org/"
 
 portage_mirror="rsync://rsync8.de.gentoo.org/gentoo-portage/"
 
