@@ -737,8 +737,6 @@ install_base() {
 
     fi
 
-    mkdir -p /mnt/gentoo/var/db/repo/gentoo/metadata/
-
     mount_boot
 
 }
@@ -851,17 +849,24 @@ ACCEPT_LICENSE="*"
 EOF
 
     mkdir -p /etc/portage/repos.conf/
+
     cat > /etc/portage/repos.conf/gentoo.conf <<EOF
 [DEFAULT]
 main-repo = gentoo
 [gentoo]
-location = /usr/portage
+location = /var/db/repos/gentoo/
 sync-type = rsync
 sync-uri = "$portage_mirror"
 auto-sync = yes
 EOF
 
-    mkdir -p /var/db/repos/bin/metadata/
+    mkdir -p /var/db/repos/gentoo/metadata/
+
+    cat > /var/db/repos/gentoo/metadata/layout.conf <<EOF
+masters = gentoo
+profile-formats = portage-2
+EOF
+
     cat > /etc/portage/repos.conf/bin.conf <<EOF
 [bin]
 priority = 1
@@ -871,6 +876,7 @@ sync-uri = "$bin_mirror"
 EOF
 
     mkdir -p /var/db/repos/bin/metadata/
+
     cat > /var/db/repos/bin/metadata/layout.conf <<EOF
 masters = gentoo
 profile-formats = portage-2
@@ -887,15 +893,17 @@ masters = gentoo
 profile-formats = portage-2
 EOF
 
+    mkdir -p /var/db/repos/local/profiles/
+
+    cat > /var/db/repos/local/profiles/repo_name <<EOF
+local
+EOF
+
     mkdir -p /var/db/repos/the-pit/metadata/
+
     cat > /var/db/repos/the-pit/metadata/layout.conf <<EOF
 masters = gentoo
 profile-formats = portage-2
-EOF
-
-    mkdir -p /var/db/repos/local/profiles/
-    cat > /var/db/repos/local/profiles/repo_name <<EOF
-local
 EOF
 
     printf '%s\n' "❯ configuring profile"
