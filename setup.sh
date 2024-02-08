@@ -834,7 +834,8 @@ FCFLAGS = "\${COMMON_FLAGS}"
 FFLAGS = "\${COMMON_FLAGS}"
 PORTDIR = /var/db/repo/gentoo/
 DISDIR = /var/cache/distfiles/
-PKGDIR = /var/cache/binpkgs/
+PKGDIR = /var/cache/bin/
+RPMDIR = /var/cache/rpm/
 USE = "-wayland -systemd -consolekit dbus als pipewire elogind png"
 ACCEPT_KEYWORDS = "-amd64"
 ELIBC = "glibc"
@@ -858,6 +859,17 @@ location = /var/db/repos/gentoo/
 sync-type = rsync
 sync-uri = "$portage_mirror"
 auto-sync = yes
+sync-rsync-verify-jobs = 1
+sync-rsync-verify-metamanifest = yes
+sync-rsync-verify-max-age = 24
+sync-openpgp-key-path = /usr/share/openpgp-keys/gentoo-release.asc
+sync-openpgp-key-refresh-retry-count = 40
+sync-openpgp-key-refresh-retry-overall-timeout = 1200
+sync-openpgp-key-refresh-retry-delay-exp-base = 2
+sync-openpgp-key-refresh-retry-delay-max = 60
+sync-openpgp-key-refresh-retry-delay-mult = 4
+sync-webrsync-verify-signature = yes
+sync-git-verify-commit-signature = yes
 EOF
 
     mkdir -p /var/db/repos/gentoo/metadata/
@@ -911,9 +923,7 @@ EOF
 
     printf '%s\n' "❯ configuring profile"
 
-    cat > /etc/portage/make.profile <<EOF
-
-EOF
+    ln -snf /etc/ /etc/portage/make.profile
 
     eselect profile list
     #profile="$(eselect profile list | grep $profile | grep -Eo "[0-9]{1,2}")"
