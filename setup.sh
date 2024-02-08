@@ -918,15 +918,12 @@ masters = gentoo
 profile-formats = portage-2
 EOF
 
+    printf '%s\n' "❯ synchronizing Portage"
     emerge-webrsync
     emerge --update sys-apps/portage
 
     printf '%s\n' "❯ configuring profile"
-
-    ln -snf /etc/ /etc/portage/make.profile
-
-    eselect profile list
-    #profile="$(eselect profile list | grep $profile | grep -Eo "[0-9]{1,2}")"
+    profile="$(eselect profile list | grep $profile | grep -Eo "[0-9]{1,2}")"
     eselect set $profile
 
     emerge --sync --quiet
