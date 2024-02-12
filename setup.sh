@@ -957,6 +957,7 @@ EOF
     #/etc/portage/make.conf/var/db/repos/gentoo/profiles/base
     profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
     #eselect set $profile
+    emerge --update --deep --newuse @world
 
     printf '%s\n' "❯ synchronizing Portage"
     emerge -g --sync --quiet
