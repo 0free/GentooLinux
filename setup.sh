@@ -911,6 +911,12 @@ masters = gentoo
 profile-formats = portage-2
 EOF
 
+    mkdir -p /var/db/repos/bin/profiles/
+
+    cat > /var/db/repos/bin/profiles/repo_name <<EOF
+bin
+EOF
+
     cat > /etc/portage/repos.conf/local.conf <<EOF
 [local]
 location = /var/db/repos/local/
