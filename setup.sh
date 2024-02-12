@@ -923,7 +923,7 @@ EOF
     emerge --update sys-apps/portage
 
     printf '%s\n' "❯ configuring profile"
-    profile="$(eselect profile list | grep $profile | grep -Eo '[0-9]{1,2}')"
+    profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
     eselect set $profile
 
     emerge --sync --quiet
