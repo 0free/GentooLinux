@@ -4,7 +4,7 @@ timezone='Asia/Muscat'
 
 ZFSpool='rpool'
 
-profile="default/linux/amd64/23.0/no-multilib/systemd"
+profile="default/linux/amd64/17.1/no-multilib/systemd"
 
 mirror="http://distfiles.gentoo.org/"
 
