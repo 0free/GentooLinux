@@ -944,16 +944,15 @@ EOF
     printf '%s\n' "❯ synchronizing Portage"
     emerge-webrsync
     emerge --update sys-apps/portage
+    emerge --update net-misc/rsync
+    emerge --update dev-vcs/git
 
     printf '%s\n' "❯ configuring profile"
-
     #/etc/portage/make.conf/var/db/repos/gentoo/profiles/base
-
     profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
-    eselect set $profile
+    #eselect set $profile
 
     emerge --sync --quiet
-    emerge dev-vcs/git
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
