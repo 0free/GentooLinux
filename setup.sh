@@ -497,7 +497,7 @@ format_drive() {
 
     if [ ! -f /usr/sbin/sgdisk ]; then
         printf '%s\n' "❯ installing sgdisk"
-        emerge -g sys-apps/gptfdisk
+        emerge -g --update --autounmask-write sys-apps/gptfdisk
     fi
 
     printf '%s\n' "❯ wiping filesystm"
@@ -584,7 +584,7 @@ create_zfs() {
 
     if ! test zfs; then
         printf '%s\n' "❯ adding ZFS"
-        emerge -g sys-fs/zfs sys-fs/zfs-kmod
+        emerge -g --update --autounmask-write sys-fs/zfs sys-fs/zfs-kmod
     fi
 
     printf '%s\n' "❯ creating ZFS pool"
@@ -943,21 +943,21 @@ EOF
 
     printf '%s\n' "❯ synchronizing Portage"
     emerge-webrsync
-    emerge --update sys-apps/portage
-    emerge --update net-misc/rsync
-    emerge --update dev-vcs/git
+    emerge -g --update --autounmask-write sys-apps/portage
+    emerge -g --update --autounmask-write net-misc/rsync
+    emerge -g --update --autounmask-write dev-vcs/git
 
     printf '%s\n' "❯ configuring profile"
     #/etc/portage/make.conf/var/db/repos/gentoo/profiles/base
     profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
     #eselect set $profile
 
-    emerge --sync --quiet
+    emerge -g --sync --quiet
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
     echo "sys-apps/systemd boot" >> /etc/portage/package.use/systemd
-    emerge -g --root=/mnt/gentoo --config-root=/mnt/gentoo sys-apps/systemd
+    emerge -g --root=/mnt/gentoo --config-root=/mnt/gentoo --update --autounmask-write sys-apps/systemd
 
     printf '%s\n' "❯ setting locales"
 
@@ -1049,9 +1049,9 @@ EOF
 
 install_linux() {
 
-    emerge -g sys-kernel/gentoo-kernel-bin
-    emerge -g sys-kernel/linux-headers
-    emerge -g sys-kernel/linux-firmware
+    emerge -g --update --autounmask-write sys-kernel/gentoo-kernel-bin
+    emerge -g --update --autounmask-write sys-kernel/linux-headers
+    emerge -g --update --autounmask-write sys-kernel/linux-firmware
 
     if grep -q virtual list; then
 
@@ -1088,7 +1088,7 @@ install_linux() {
     fi
 
     printf '%s\n' "❯ installing linux"
-    emerge -g $list
+    emerge -g --update --autounmask-write $list
 
     sed -i 's|step=.*|step=3|' list
 
@@ -1105,7 +1105,7 @@ install_pkg() {
         fi
     done
     printf '%s\n' "❯ installing packages"
-    emerge -g $list
+    emerge -g --update --autounmask-write $list
 
     sed -i 's|step=.*|step=4|' list
 
@@ -1507,9 +1507,9 @@ EOF
 systemd_boot() {
 
     printf '%s\n' "❯ installing systemd-boot"
-    emerge -g sys-apps/systemd boot
-    emerge -g sys-kernel/installkernel-systemd
-    emerge -g kernel-install
+    emerge -g --update --autounmask-write sys-apps/systemd boot
+    emerge -g --update --autounmask-write sys-kernel/installkernel-systemd
+    emerge -g --update --autounmask-write kernel-install
 
     bootctl install
 
@@ -1588,7 +1588,7 @@ search() {
     emerge -s
 }
 install() {
-    doas emerge
+    doas emerge -g --update --autounmask-write
 }
 remove() {
     doas emerge --depclean
@@ -1624,7 +1624,7 @@ EOF
 update() {
     if curl -so /dev/null gentooLinux.org; then
         printf '%s\n' "❯ updating gentooLinux"
-        doas emerge -g --update --deep --changed-use @world
+        doas emerge -g --update --autounmask-write --deep --changed-use @world
         if [ -f /usr/bin/fwupdmgr ]; then
             doas fwupdmgr get-devices
             doas fwupdmgr refresh
