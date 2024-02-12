@@ -10,7 +10,7 @@ mirror="http://distfiles.gentoo.org/"
 
 portage_mirror="rsync://rsync8.de.gentoo.org/gentoo-portage/"
 
-bin_mirror="https://ftp.fau.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/"
+bin_mirror="https://mirror.dogado.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/"
 
 stage3_root="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-systemd/"
 
