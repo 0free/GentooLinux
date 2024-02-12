@@ -846,7 +846,7 @@ LC_MESSAGES = C.utf8
 GENTOO_MIRRORS = "$mirror"
 FEATURES = "\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
-ACCEPT_KEYWORDS = "-amd64"
+ACCEPT_KEYWORDS = "amd64"
 ACCEPT_LICENSE="*"
 USE = "acl posix xattr
        atm curl git http2 webkit
