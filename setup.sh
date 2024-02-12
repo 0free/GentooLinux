@@ -836,8 +836,6 @@ PORTDIR = /var/db/repos/gentoo/
 DISDIR = /var/cache/distfiles/
 PKGDIR = /var/cache/bin/
 RPMDIR = /var/cache/rpm/
-USE = "-wayland -systemd -consolekit dbus als pipewire elogind png"
-ACCEPT_KEYWORDS = "-amd64"
 ELIBC = "glibc"
 KERNEL = "linux"
 INPUT_DEVICE = "libinput synaptics"
@@ -846,7 +844,24 @@ LC_MESSAGES = C.utf8
 GENTOO_MIRRORS = "$mirror"
 FEATURES = "\${FEATURES} binpkg-request-signature"
 EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
+ACCEPT_KEYWORDS = "-amd64"
 ACCEPT_LICENSE="*"
+USE = "acl posix xattr
+       atm curl git http2 webkit
+       alsa pipewire
+       apparmor
+       aac avif cairo dts encode exif expat ffmpeg gd gif jpeg png webp
+       vaapi vdpau x264
+       bash-completion 
+       bluetooth cups ios
+       brotli bzip2 gzip lz4 lzip lzma lzo zip zlib zstd
+       heif
+       cuda opencl
+       dri egl gles2 opengl vulkan
+       networkmanager wifi
+       python
+       wayland systemd consolekit dbus elogind policykit
+       acpi udev udisks uefi upower usb"
 EOF
 
     mkdir -p /etc/portage/repos.conf/
@@ -923,6 +938,9 @@ EOF
     emerge --update sys-apps/portage
 
     printf '%s\n' "❯ configuring profile"
+
+    #/etc/portage/make.conf/var/db/repos/gentoo/profiles/base
+
     profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
     eselect set $profile
 
