@@ -29,6 +29,10 @@ pkg_list() {
     "
 
     pkg="$pkg
+    app-portage/cpuid2cpuflags
+    "
+
+    pkg="$pkg
     sys-apps/apparmor
     sys-apps/apparmor-utils
     sys-apps/bolt
@@ -497,7 +501,7 @@ format_drive() {
 
     if [ ! -f /usr/sbin/sgdisk ]; then
         printf '%s\n' "❯ installing sgdisk"
-        emerge -g --update --autounmask-write sys-apps/gptfdisk
+        emerge --getbinpkg --update --autounmask-write sys-apps/gptfdisk
     fi
 
     printf '%s\n' "❯ wiping filesystm"
@@ -584,7 +588,8 @@ create_zfs() {
 
     if ! test zfs; then
         printf '%s\n' "❯ adding ZFS"
-        emerge -g --update --autounmask-write sys-fs/zfs sys-fs/zfs-kmod
+        emerge --getbinpkg --update --autounmask-write sys-fs/zfs
+        emerge --getbinpkg --update --autounmask-write sys-fs/zfs-kmod
     fi
 
     printf '%s\n' "❯ creating ZFS pool"
@@ -844,8 +849,13 @@ INPUT_DEVICE = "libinput synaptics"
 VIDEO_CARDS = "amdgpu intel nvidia virgl d3d12"
 LC_MESSAGES = C.utf8
 GENTOO_MIRRORS = "$mirror"
-FEATURES = "\${FEATURES} binpkg-request-signature"
-EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS} --getbinpkg --with-bdeps=y"
+BINPKG_FORMAT = "gpkg"
+BINPKG_COMPRESS = "lz4"
+MAKEOPTS="--jobs $(nproc) --load-average=8"
+FEATURES = "\${FEATURES} getbinpkg binpkg-request-signature ccache"
+EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS}
+                       --jobs $(nproc) --load-average=8
+                       --getbinpkg --with-bdeps=y"
 ACCEPT_KEYWORDS = "amd64"
 ACCEPT_LICENSE="*"
 CONFIG_PROTECT="-*"
@@ -946,27 +956,27 @@ EOF
     emerge-webrsync
 
     printf '%s\n' "❯ updating Portage"
-    emerge -g --update --autounmask-write sys-apps/portage
+    emerge --getbinpkg --update --autounmask-write sys-apps/portage
 
     printf '%s\n' "❯ installing rsync"
-    emerge -g --update --autounmask-write net-misc/rsync
+    emerge --getbinpkg --update --autounmask-write net-misc/rsync
 
     printf '%s\n' "❯ installing git"
-    emerge -g --update --autounmask-write dev-vcs/git
+    emerge --getbinpkg --update --autounmask-write dev-vcs/git
 
     printf '%s\n' "❯ configuring profile"
     #/etc/portage/make.conf/var/db/repos/gentoo/profiles/base
     profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
     #eselect set $profile
-    emerge --update --deep --newuse @world
+    emerge --getbinpkg --update --deep --newuse @world
 
     printf '%s\n' "❯ synchronizing Portage"
-    emerge -g --sync --quiet
+    emerge --getbinpkg --sync --quiet
 
     printf '%s\n' "❯ configuring systemd"
     mkdir -p /etc/portage/package.use/
     echo "sys-apps/systemd boot" >> /etc/portage/package.use/systemd
-    emerge -g --root=/mnt/gentoo --config-root=/mnt/gentoo --update --autounmask-write sys-apps/systemd
+    emerge --getbinpkg --root=/mnt/gentoo --config-root=/mnt/gentoo --update --autounmask-write sys-apps/systemd
 
     printf '%s\n' "❯ setting locales"
 
@@ -1058,9 +1068,9 @@ EOF
 
 install_linux() {
 
-    emerge -g --update --autounmask-write sys-kernel/gentoo-kernel-bin
-    emerge -g --update --autounmask-write sys-kernel/linux-headers
-    emerge -g --update --autounmask-write sys-kernel/linux-firmware
+    emerge --getbinpkg --update --autounmask-write sys-kernel/gentoo-kernel-bin
+    emerge --getbinpkg --update --autounmask-write sys-kernel/linux-headers
+    emerge --getbinpkg --update --autounmask-write sys-kernel/linux-firmware
 
     if grep -q virtual list; then
 
@@ -1097,7 +1107,7 @@ install_linux() {
     fi
 
     printf '%s\n' "❯ installing linux"
-    emerge -g --update --autounmask-write $list
+    emerge --getbinpkg --update --autounmask-write $list
 
     sed -i 's|step=.*|step=3|' list
 
@@ -1114,7 +1124,7 @@ install_pkg() {
         fi
     done
     printf '%s\n' "❯ installing packages"
-    emerge -g --update --autounmask-write $list
+    emerge --getbinpkg --update --autounmask-write $list
 
     sed -i 's|step=.*|step=4|' list
 
@@ -1516,9 +1526,9 @@ EOF
 systemd_boot() {
 
     printf '%s\n' "❯ installing systemd-boot"
-    emerge -g --update --autounmask-write sys-apps/systemd boot
-    emerge -g --update --autounmask-write sys-kernel/installkernel-systemd
-    emerge -g --update --autounmask-write kernel-install
+    emerge --getbinpkg --update --autounmask-write sys-apps/systemd boot
+    emerge --getbinpkg --update --autounmask-write sys-kernel/installkernel-systemd
+    emerge --getbinpkg --update --autounmask-write kernel-install
 
     bootctl install
 
@@ -1597,7 +1607,7 @@ search() {
     emerge -s
 }
 install() {
-    doas emerge -g --update --autounmask-write
+    doas emerge --getbinpkg --update --autounmask-write
 }
 remove() {
     doas emerge --depclean
@@ -1633,7 +1643,7 @@ EOF
 update() {
     if curl -so /dev/null gentooLinux.org; then
         printf '%s\n' "❯ updating gentooLinux"
-        doas emerge -g --update --autounmask-write --deep --changed-use @world
+        doas emerge --getbinpkg --update --autounmask-write --deep --changed-use @world
         if [ -f /usr/bin/fwupdmgr ]; then
             doas fwupdmgr get-devices
             doas fwupdmgr refresh
