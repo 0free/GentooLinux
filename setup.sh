@@ -943,8 +943,14 @@ EOF
 
     printf '%s\n' "❯ synchronizing Portage"
     emerge-webrsync
+
+    printf '%s\n' "❯ updating Portage"
     emerge -g --update --autounmask-write sys-apps/portage
+
+    printf '%s\n' "❯ installing rsync"
     emerge -g --update --autounmask-write net-misc/rsync
+
+    printf '%s\n' "❯ installing git"
     emerge -g --update --autounmask-write dev-vcs/git
 
     printf '%s\n' "❯ configuring profile"
@@ -952,6 +958,7 @@ EOF
     profile="$(eselect profile list | grep "$profile " | grep -Eo "\[[0-9]{1,2}\]" | grep -Eo "[0-9]{1,2}")"
     #eselect set $profile
 
+    printf '%s\n' "❯ synchronizing Portage"
     emerge -g --sync --quiet
 
     printf '%s\n' "❯ configuring systemd"
