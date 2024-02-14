@@ -4,7 +4,7 @@ timezone='Asia/Muscat'
 
 ZFSpool='rpool'
 
-profile="default/linux/amd64/17.1/no-multilib/systemd"
+profile="default/linux/amd64/17.1/systemd"
 
 mirror="http://distfiles.gentoo.org/"
 
@@ -14,13 +14,13 @@ bin_mirror="https://distfiles.gentoo.org/releases/amd64/binpackages/17.1/x86-64-
 
 #bin_mirror="https://mirror.dogado.de/gentoo/releases/amd64/binpackages/17.1/x86-64-v3/"
 
-stage3_root="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-systemd/"
+stage3_root="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-systemd/"
 
-stage3_root_file="latest-stage3-amd64-nomultilib-systemd.txt"
+stage3_root_file="latest-stage3-amd64-systemd.txt"
 
-stage3_recovery="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-nomultilib-openrc/"
+stage3_recovery="http://gentoo-mirror.flux.utah.edu/releases/amd64/autobuilds/current-stage3-amd64-openrc/"
 
-stage3_recovery_file="latest-stage3-amd64-nomultilib-openrc.txt"
+stage3_recovery_file="latest-stage3-amd64-openrc.txt"
 
 pkg_list() {
 
