@@ -1755,31 +1755,31 @@ else
 
     if [ -f list ]; then
 
-        drive=$(. list; printf '%s' $drive)
-        filesystem=$(. list; printf '%s' $filesystem)
-        bootDrive=$(. list; printf '%s' $bootDrive)
-        swapDrive=$(. list; printf '%s' $swapDrive)
-        rootDrive=$(. list; printf '%s' $rootDrive)
-        recoveryDrive=$(. list; printf '%s' $recoveryDrive)
-        windowsDrive=$(. list; printf '%s' $windowsDrive)
-        windowsBoot=$(. list; printf '%s' $windowsBoot)
-        user=$(. list; printf '%s' $user)
-        password=$(. list; printf '%s' $password)
+        drive="$(. list; printf '%s' $drive)"
+        filesystem="$(. list; printf '%s' $filesystem)"
+        bootDrive="$(. list; printf '%s' $bootDrive)"
+        swapDrive="$(. list; printf '%s' $swapDrive)"
+        rootDrive="$(. list; printf '%s' $rootDrive)"
+        recoveryDrive="$(. list; printf '%s' $recoveryDrive)"
+        windowsDrive="$(. list; printf '%s' $windowsDrive)"
+        windowsBoot="$(. list; printf '%s' $windowsBoot)"
+        user="$(. list; printf '%s' $user)"
+        password="$(. list; printf '%s' $password)"
         H="/home/$user"
 
         if grep -q 'step=' list; then
 
-            if [ $(. list; printf '%s' $step) = 14 ]; then
+            if [ "$(. list; printf '%s' $step)" = 14 ]; then
                 reboot
             fi
 
-            if [ $(. list; printf '%s' $step) = 13 ]; then
+            if [ "$(. list; printf '%s' $step)" = 13 ]; then
                 unmount
             fi
 
             while true; do
 
-                case $(. list; printf '%s' $step) in
+                case "$(. list; printf '%s' $step)" in
 
                     '0') set_fstab;;
                     '1') configure_gentoo;;
@@ -1807,6 +1807,10 @@ else
                 install_base
                 change_root
 
+            else
+
+                setup_drive
+
             fi
         fi
 
@@ -1816,7 +1820,6 @@ else
         init_drive
         init_system
         init_user
-        setup_drive
 
     fi
 
