@@ -863,7 +863,7 @@ USE = "acl posix xattr
        atm curl git http2 webkit
        alsa pipewire
        apparmor
-       aac avif cairo dts encode exif expat ffmpeg gd gif jpeg png webp
+       aac avif cairo dts encode exif expat ffmpeg png
        vaapi vdpau x264
        bash-completion 
        bluetooth cups ios
@@ -874,7 +874,8 @@ USE = "acl posix xattr
        networkmanager wifi
        python
        wayland systemd consolekit dbus elogind policykit
-       acpi udev udisks uefi upower usb"
+       acpi udev udisks uefi upower usb
+       -harfbuzz"
 EOF
 
     mkdir -p /etc/portage/repos.conf/
