@@ -852,7 +852,7 @@ GENTOO_MIRRORS = "$mirror"
 BINPKG_FORMAT = "gpkg"
 BINPKG_COMPRESS = "lz4"
 MAKEOPTS="--jobs $(nproc) --load-average=8"
-FEATURES = "\${FEATURES} getbinpkg binpkg-request-signature ccache"
+FEATURES = "\${FEATURES} getbinpkg binpkg-request-signature"
 EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS}
                        --jobs $(nproc) --load-average=8
                        --getbinpkg --with-bdeps=y"
