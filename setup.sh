@@ -860,7 +860,7 @@ ACCEPT_KEYWORDS = "amd64"
 ACCEPT_LICENSE="*"
 CONFIG_PROTECT="-*"
 USE = "
-       aac avif cairo dts encode exif expat ffmpeg png
+       aac dts ffmpeg png
        vaapi vdpau x264
        brotli bzip2 gzip lz4 lzip lzma lzo zip zlib zstd
        cuda opencl
