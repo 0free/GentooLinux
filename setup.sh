@@ -859,20 +859,15 @@ EMERGE_DEFAULT_OPTS = "\${EMERGE_DEFAULT_OPTS}
 ACCEPT_KEYWORDS = "amd64"
 ACCEPT_LICENSE="*"
 CONFIG_PROTECT="-*"
-USE = "acl posix xattr
-       atm curl git http2 webkit
-       alsa pipewire
-       apparmor
+USE = "
        aac avif cairo dts encode exif expat ffmpeg png
        vaapi vdpau x264
-       bluetooth cups
        brotli bzip2 gzip lz4 lzip lzma lzo zip zlib zstd
        cuda opencl
        dri egl gles2 opengl vulkan
-       networkmanager wifi
-       python
        wayland systemd consolekit dbus elogind policykit
-       acpi udev udisks uefi upower usb"
+       acpi udev udisks uefi upower usb
+       "
 EOF
 
     mkdir -p /etc/portage/repos.conf/
