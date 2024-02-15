@@ -865,17 +865,14 @@ USE = "acl posix xattr
        apparmor
        aac avif cairo dts encode exif expat ffmpeg png
        vaapi vdpau x264
-       bash-completion 
-       bluetooth cups ios
+       bluetooth cups
        brotli bzip2 gzip lz4 lzip lzma lzo zip zlib zstd
-       heif
        cuda opencl
        dri egl gles2 opengl vulkan
        networkmanager wifi
        python
        wayland systemd consolekit dbus elogind policykit
-       acpi udev udisks uefi upower usb
-       -harfbuzz"
+       acpi udev udisks uefi upower usb"
 EOF
 
     mkdir -p /etc/portage/repos.conf/
